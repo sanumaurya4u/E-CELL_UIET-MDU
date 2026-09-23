@@ -28,9 +28,12 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('ECELL_ADMIN_SESSION');
+      const saved = typeof window !== 'undefined' ? localStorage.getItem('ECELL_ADMIN_SESSION') : null;
       if (saved) {
-        setUser(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        queueMicrotask(() => {
+          setUser(parsed);
+        });
       }
     } catch (e) {
       console.warn('[AdminAuth] LocalStorage parse note:', e);

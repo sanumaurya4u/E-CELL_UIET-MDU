@@ -65,8 +65,9 @@ export default function EventsManager({
     }
 
     if (editing) {
-      const updated = events.map((ev) => (ev.id === editing.id ? { ...ev, ...form } : ev));
+      const updated: EventItem[] = events.map((ev) => (ev.id === editing.id ? { ...ev, ...form } : ev));
       if (setEvents) setEvents(updated);
+      try { localStorage.setItem('ECELL_EVENTS', JSON.stringify(updated)); } catch {}
       persist({ ...editing, ...form }, true);
       showToast('Event updated successfully!', 'success');
     } else {
@@ -75,7 +76,9 @@ export default function EventsManager({
         id: Date.now(),
         tags: form.tagline ? form.tagline.split(',').map((t) => t.trim()).filter(Boolean).slice(0, 3) : ['Event', 'UIET'],
       };
-      if (setEvents) setEvents([created, ...events]);
+      const updated = [created, ...events];
+      if (setEvents) setEvents(updated);
+      try { localStorage.setItem('ECELL_EVENTS', JSON.stringify(updated)); } catch {}
       persist(created, false);
       showToast('Event created successfully!', 'success');
     }
@@ -83,15 +86,19 @@ export default function EventsManager({
   };
 
   const toggleStatus = (ev: EventItem) => {
-    const newStatus = ev.status === 'upcoming' ? 'past' : 'upcoming';
-    if (setEvents) setEvents(events.map((x) => (x.id === ev.id ? { ...x, status: newStatus } : x)));
+    const newStatus: 'upcoming' | 'past' = ev.status === 'upcoming' ? 'past' : 'upcoming';
+    const updated: EventItem[] = events.map((x) => (x.id === ev.id ? { ...x, status: newStatus } : x));
+    if (setEvents) setEvents(updated);
+    try { localStorage.setItem('ECELL_EVENTS', JSON.stringify(updated)); } catch {}
     persist({ ...ev, status: newStatus }, true);
     showToast(`Marked as ${newStatus}`, 'info');
   };
 
   const handleDelete = (id: number) => {
     if (confirm('Are you sure you want to delete this event?')) {
-      if (setEvents) setEvents(events.filter((e) => e.id !== id));
+      const updated = events.filter((e) => e.id !== id);
+      if (setEvents) setEvents(updated);
+      try { localStorage.setItem('ECELL_EVENTS', JSON.stringify(updated)); } catch {}
       if (supabase) supabase.from('events').delete().eq('id', id).then(undefined, () => {});
       showToast('Event deleted', 'info');
     }

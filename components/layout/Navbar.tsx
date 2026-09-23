@@ -8,10 +8,19 @@ import { NAV_LINKS, SITE } from '@/lib/constants';
 import Button from '@/components/ui/Button';
 import MobileMenu from './MobileMenu';
 
+import { useData } from '@/context/DataProvider';
+
 export default function Navbar() {
+  const { settings } = useData();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
+
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setIsMobileOpen(false);
+  }
 
   // Transparent over hero → floating white pill after slight scroll
   useEffect(() => {
@@ -23,17 +32,25 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileOpen(false);
-  }, [pathname]);
+  const hasBanner = !!settings?.announcementBanner?.enabled;
 
   return (
     <>
+      {hasBanner && (
+        <div className="fixed top-0 left-0 right-0 z-[1001] bg-ink text-white py-1.5 px-4 text-center text-xs font-medium tracking-wide flex items-center justify-center gap-2">
+          <span>{settings.announcementBanner?.text}</span>
+          <Link
+            href={settings.announcementBanner?.linkUrl || '/contact'}
+            className="underline underline-offset-2 hover:opacity-80 transition-opacity"
+          >
+            {settings.announcementBanner?.linkText || 'Apply Now ↗'}
+          </Link>
+        </div>
+      )}
       <header
-        className={`fixed top-0 left-0 right-0 z-[1000] flex justify-center px-4 pt-4 pointer-events-none transition-[padding] duration-200 ${
-          isScrolled ? 'scrolled' : ''
-        }`}
+        className={`fixed left-0 right-0 z-[1000] flex justify-center px-4 pointer-events-none transition-[padding,top] duration-200 ${
+          hasBanner ? 'top-8 pt-2' : 'top-0 pt-4'
+        } ${isScrolled ? 'scrolled' : ''}`}
       >
         <nav
           aria-label="Main Navigation"

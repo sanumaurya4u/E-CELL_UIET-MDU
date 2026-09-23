@@ -74,12 +74,16 @@ export default function TeamManager({
     }
 
     if (editing) {
-      if (setTeam) setTeam(team.map((m) => (m.id === editing.id ? { ...m, ...form } : m)));
+      const updated = team.map((m) => (m.id === editing.id ? { ...m, ...form } : m));
+      if (setTeam) setTeam(updated);
+      try { localStorage.setItem('ECELL_TEAM', JSON.stringify(updated)); } catch {}
       persist({ ...editing, ...form }, true);
       showToast('Member updated!', 'success');
     } else {
       const created: AdminMember = { ...form, id: Date.now() };
-      if (setTeam) setTeam([...team, created]);
+      const updated = [...team, created];
+      if (setTeam) setTeam(updated);
+      try { localStorage.setItem('ECELL_TEAM', JSON.stringify(updated)); } catch {}
       persist(created, false);
       showToast('Team member added!', 'success');
     }
@@ -88,7 +92,9 @@ export default function TeamManager({
 
   const handleDelete = (id: number) => {
     if (confirm('Remove this team member?')) {
-      if (setTeam) setTeam(team.filter((m) => m.id !== id));
+      const updated = team.filter((m) => m.id !== id);
+      if (setTeam) setTeam(updated);
+      try { localStorage.setItem('ECELL_TEAM', JSON.stringify(updated)); } catch {}
       if (supabase) supabase.from('team').delete().eq('id', id).then(undefined, () => {});
       showToast('Member removed', 'info');
     }

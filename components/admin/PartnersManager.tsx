@@ -66,12 +66,16 @@ export default function PartnersManager({
     };
 
     if (editing) {
-      if (setSponsors) setSponsors(sponsors.map((s) => (s.id === editing.id ? { ...s, ...withInitials } : s)));
+      const updated = sponsors.map((s) => (s.id === editing.id ? { ...s, ...withInitials } : s));
+      if (setSponsors) setSponsors(updated);
+      try { localStorage.setItem('ECELL_SPONSORS', JSON.stringify(updated)); } catch {}
       persist({ ...editing, ...withInitials }, true);
       showToast('Partner updated!', 'success');
     } else {
       const created: Sponsor = { ...withInitials, id: Date.now() };
-      if (setSponsors) setSponsors([...sponsors, created]);
+      const updated = [...sponsors, created];
+      if (setSponsors) setSponsors(updated);
+      try { localStorage.setItem('ECELL_SPONSORS', JSON.stringify(updated)); } catch {}
       persist(created, false);
       showToast('Partner added!', 'success');
     }
@@ -80,7 +84,9 @@ export default function PartnersManager({
 
   const handleDelete = (id: number) => {
     if (confirm('Remove this partner?')) {
-      if (setSponsors) setSponsors(sponsors.filter((s) => s.id !== id));
+      const updated = sponsors.filter((s) => s.id !== id);
+      if (setSponsors) setSponsors(updated);
+      try { localStorage.setItem('ECELL_SPONSORS', JSON.stringify(updated)); } catch {}
       if (supabase) supabase.from('sponsors').delete().eq('id', id).then(undefined, () => {});
       showToast('Partner removed', 'info');
     }

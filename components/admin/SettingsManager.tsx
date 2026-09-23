@@ -31,21 +31,25 @@ export default function SettingsManager({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (setSettings) {
-      setSettings((prev: AdminSettings) => ({
-        ...prev,
-        web3formsKey: form.web3formsKey,
-        siteInfo: {
-          ...prev.siteInfo,
-          email: form.email,
-          phone: form.phone,
-          address: form.address,
-        },
-        announcementBanner: {
-          ...prev.announcementBanner,
-          text: form.bannerText,
-          enabled: form.bannerEnabled,
-        },
-      }));
+      setSettings((prev: AdminSettings) => {
+        const next = {
+          ...prev,
+          web3formsKey: form.web3formsKey,
+          siteInfo: {
+            ...prev.siteInfo,
+            email: form.email,
+            phone: form.phone,
+            address: form.address,
+          },
+          announcementBanner: {
+            ...prev.announcementBanner,
+            text: form.bannerText,
+            enabled: form.bannerEnabled,
+          },
+        };
+        try { localStorage.setItem('ECELL_SETTINGS', JSON.stringify(next)); } catch {}
+        return next;
+      });
     }
     showToast('Settings saved successfully!', 'success');
   };

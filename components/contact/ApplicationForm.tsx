@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { useToast } from '@/context/ToastProvider';
+import { useData } from '@/context/DataProvider';
 import { supabase } from '@/lib/supabase';
 
 interface AppSettings {
   web3formsKey?: string;
 }
 
-interface FormData {
+interface ApplicationFormData {
   fullName: string;
   enrollment: string;
   email: string;
@@ -28,10 +29,11 @@ const labelClass = 'block text-sm font-medium text-ink mb-2';
 
 export default function ApplicationForm({ settings }: { settings?: AppSettings }) {
   const { showToast } = useToast();
+  const { applications, setApplications } = useData();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ApplicationFormData>({
     fullName: '',
     enrollment: '',
     email: '',
@@ -98,6 +100,13 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
         notes: '',
         history: [{ status: 'Pending', by: 'System (Public Form)', date: submittedOn }],
       };
+ 
+      // Update local state and cache
+      const nextApps = [newApp, ...applications];
+      setApplications(nextApps);
+      try {
+        localStorage.setItem('ECELL_APPLICATIONS', JSON.stringify(nextApps));
+      } catch {}
 
       // 1. Supabase insert
       if (supabase) {

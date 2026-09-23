@@ -1,6 +1,9 @@
 export function formatDate(iso?: string | null): string {
   if (!iso) return '';
-  return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', {
+  const dateStr = iso.includes('T') ? iso : `${iso}T00:00:00`;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',

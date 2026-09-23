@@ -40,6 +40,9 @@ export default function ApplicationsManager({
   const updateStatus = async (appId: number, newStatus: string) => {
     const updated = applications.map((a) => (a.id === appId ? { ...a, status: newStatus } : a));
     if (setApplications) setApplications(updated);
+    try {
+      localStorage.setItem('ECELL_APPLICATIONS', JSON.stringify(updated));
+    } catch {}
 
     if (supabase) {
       try {
@@ -176,7 +179,14 @@ export default function ApplicationsManager({
                 <Detail label="Preferred Dept:" value={selectedApp.deptInterest || selectedApp.deptinterest || 'N/A'} />
                 <Detail
                   label="Submitted:"
-                  value={new Date(selectedApp.submittedOn || selectedApp.submittedon || Date.now()).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                  value={
+                    selectedApp.submittedOn || selectedApp.submittedon
+                      ? new Date(selectedApp.submittedOn || selectedApp.submittedon!).toLocaleString('en-IN', {
+                          dateStyle: 'medium',
+                          timeStyle: 'short',
+                        })
+                      : 'N/A'
+                  }
                 />
                 {selectedApp.linkedin && (
                   <Detail

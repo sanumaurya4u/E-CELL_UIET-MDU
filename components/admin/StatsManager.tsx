@@ -47,6 +47,7 @@ export default function StatsManager({
     };
 
     if (setStats) setStats(next);
+    try { localStorage.setItem('ECELL_STATS', JSON.stringify(next)); } catch {}
 
     if (supabase) {
       supabase

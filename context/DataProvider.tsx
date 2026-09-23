@@ -141,7 +141,42 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    fetchLiveSupabase();
+    const timer = setTimeout(async () => {
+      // 1. Try loading cached local storage
+      try {
+        if (typeof window !== 'undefined') {
+          const cachedApps = localStorage.getItem('ECELL_APPLICATIONS');
+          if (cachedApps) setApplications(JSON.parse(cachedApps));
+
+          const cachedEvents = localStorage.getItem('ECELL_EVENTS');
+          if (cachedEvents) setEvents(JSON.parse(cachedEvents));
+
+          const cachedTeam = localStorage.getItem('ECELL_TEAM');
+          if (cachedTeam) setTeam(JSON.parse(cachedTeam));
+
+          const cachedSponsors = localStorage.getItem('ECELL_SPONSORS');
+          if (cachedSponsors) setSponsors(JSON.parse(cachedSponsors));
+
+          const cachedStats = localStorage.getItem('ECELL_STATS');
+          if (cachedStats) setStats(JSON.parse(cachedStats));
+
+          const cachedGallery = localStorage.getItem('ECELL_GALLERY');
+          if (cachedGallery) setGallery(JSON.parse(cachedGallery));
+
+          const cachedSettings = localStorage.getItem('ECELL_SETTINGS');
+          if (cachedSettings) setSettings(JSON.parse(cachedSettings));
+        }
+      } catch (e) {
+        console.warn('[DataProvider] LocalStorage load note:', e);
+      }
+
+      // 2. Fetch live from Supabase if configured
+      if (supabase) {
+        await fetchLiveSupabase();
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (

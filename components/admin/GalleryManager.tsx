@@ -38,6 +38,7 @@ export default function GalleryManager({
     const created: GalleryItem = { ...form, id: Date.now() };
     const next = [created, ...gallery];
     if (setGallery) setGallery(next);
+    try { localStorage.setItem('ECELL_GALLERY', JSON.stringify(next)); } catch {}
 
     if (supabase) {
       supabase
@@ -53,7 +54,9 @@ export default function GalleryManager({
 
   const handleDelete = (id: number) => {
     if (confirm('Remove this photo from the gallery?')) {
-      if (setGallery) setGallery(gallery.filter((g) => g.id !== id));
+      const updated = gallery.filter((g) => g.id !== id);
+      if (setGallery) setGallery(updated);
+      try { localStorage.setItem('ECELL_GALLERY', JSON.stringify(updated)); } catch {}
       if (supabase) supabase.from('gallery').delete().eq('id', id).then(undefined, () => {});
       showToast('Photo removed', 'info');
     }
