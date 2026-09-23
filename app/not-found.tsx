@@ -1,42 +1,36 @@
 import React from 'react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import Button from '@/components/ui/Button';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <>
-      <Navbar />
-      <main className="min-h-[70vh] flex items-center justify-center py-40 px-6">
-        <div className="text-center max-w-[640px]">
-          {/* Selection box around 404 — Awake style */}
-          <div className="relative inline-block mb-10 px-16 py-8 border border-border rounded-panel">
-            <span className="absolute -top-[5px] -left-[5px] h-2.5 w-2.5 rounded-full bg-ink" />
-            <span className="absolute -top-[5px] -right-[5px] h-2.5 w-2.5 rounded-full bg-ink" />
-            <span className="absolute -bottom-[5px] -left-[5px] h-2.5 w-2.5 rounded-full bg-ink" />
-            <span className="absolute -bottom-[5px] -right-[5px] h-2.5 w-2.5 rounded-full bg-ink" />
-            <span className="font-sans font-medium text-[clamp(72px,10vw,120px)] leading-none tracking-[-0.045em] text-ink">
-              404
-            </span>
-          </div>
-
-          <h1 className="font-sans font-medium text-[clamp(28px,4vw,44px)] leading-[1.12] tracking-[-0.035em] text-ink mb-4 [text-wrap:balance]">
-            Oops! The page you are looking for{' '}
-            <span className="font-serif italic font-normal text-[1.05em]">doesn&apos;t exist</span>
-          </h1>
-
-          <p className="text-[16px] leading-[1.6] text-secondary mb-8">
-            The URL may have been moved, deleted, or entered incorrectly.
-          </p>
-
-          <div className="flex justify-center">
-            <Button href="/" variant="primary" size="lg" arrow>
-              Back To Home
-            </Button>
-          </div>
+    <div className="min-h-[70vh] flex items-center justify-center py-20 px-6">
+      <div className="text-center max-w-lg card-warm p-10 sm:p-14 shadow-xs">
+        
+        {/* 404 Eyebrow */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-warm-secondary border border-warm text-orange-accent text-xs font-bold tracking-wider uppercase mb-6">
+          <span>PAGE NOT FOUND</span>
         </div>
-      </main>
-      <Footer />
-    </>
+
+        <div className="font-sans font-extrabold text-7xl sm:text-8xl leading-none tracking-tight text-warm-primary mb-6">
+          404
+        </div>
+
+        <h1 className="font-sans font-bold text-2xl tracking-tight text-warm-primary mb-3">
+          Oops! The page you are looking for <span className="text-orange-accent">doesn&apos;t exist</span>
+        </h1>
+
+        <p className="text-sm text-warm-secondary mb-8 leading-relaxed">
+          The URL may have been moved, deleted, or entered incorrectly. Let&apos;s get you back to the campus hub.
+        </p>
+
+        <div className="flex justify-center">
+          <Link href="/" className="btn-pill-primary text-sm px-6 py-3 font-semibold shadow-xs">
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            <span>Back To Home</span>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }

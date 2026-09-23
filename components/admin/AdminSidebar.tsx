@@ -53,11 +53,11 @@ export default function AdminSidebar({
   const { user, logout } = useAdminAuth();
 
   return (
-    <aside className="w-[272px] shrink-0 h-screen sticky top-0 flex flex-col bg-white border-r border-border">
+    <aside className="w-[272px] shrink-0 h-screen sticky top-0 flex flex-col bg-warm-surface border-r border-warm">
       {/* Brand */}
       <div className="px-5 pt-6 pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-card bg-soft border border-bordersubtle flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-warm-secondary border border-warm flex items-center justify-center shrink-0">
             <Image src="/logo.png" alt="UIET E-Cell" width={28} height={28} className="rounded-md" />
           </div>
           <div className="leading-tight min-w-0">
@@ -82,18 +82,18 @@ export default function AdminSidebar({
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2.5 py-2.5 px-3.5 rounded-pill text-sm font-medium text-left transition-colors duration-200 ${
+                  className={`flex items-center gap-2.5 py-2.5 px-3.5 rounded-full text-xs font-semibold text-left transition-all ${
                     active
-                      ? 'bg-ink text-white'
-                      : 'text-secondary hover:text-ink hover:bg-soft'
+                      ? 'bg-[#211B17] text-[#FCFAF6] shadow-2xs'
+                      : 'text-warm-secondary hover:text-warm-primary hover:bg-warm-secondary'
                   }`}
                 >
-                  <Icon size={17} className="shrink-0" />
+                  <Icon size={16} className="shrink-0" />
                   <span className="flex-1">{tab.label}</span>
                   {tab.id === 'applications' && pendingCount > 0 && (
                     <span
-                      className={`text-[11px] font-semibold py-0.5 px-2 rounded-pill ${
-                        active ? 'bg-white text-ink' : 'bg-violet text-white'
+                      className={`text-[10px] font-bold py-0.5 px-2 rounded-full ${
+                        active ? 'bg-white text-[#211B17]' : 'bg-orange-accent text-white'
                       }`}
                     >
                       {pendingCount}
@@ -108,13 +108,13 @@ export default function AdminSidebar({
 
       {/* User & actions */}
       <div className="px-4 pb-5 pt-2 flex flex-col gap-3">
-        <div className="flex items-center gap-3 bg-soft border border-bordersubtle rounded-card p-3">
-          <div className="w-9 h-9 rounded-full bg-ink text-white flex items-center justify-center text-xs font-semibold uppercase shrink-0">
+        <div className="flex items-center gap-3 bg-warm-secondary border border-warm rounded-2xl p-3">
+          <div className="w-8 h-8 rounded-full bg-[#211B17] text-white flex items-center justify-center text-xs font-bold uppercase shrink-0">
             {(user?.name || 'A').charAt(0)}
           </div>
           <div className="leading-tight min-w-0">
-            <div className="text-sm font-medium text-ink truncate">{user?.name || 'Admin'}</div>
-            <div className="text-xs text-muted truncate">{user?.role || 'Super Admin'}</div>
+            <div className="text-xs font-bold text-warm-primary truncate">{user?.name || 'Admin'}</div>
+            <div className="text-[10px] font-semibold text-orange-accent truncate">{user?.role || 'Super Admin'}</div>
           </div>
         </div>
 
@@ -122,16 +122,16 @@ export default function AdminSidebar({
           <Link
             href="/"
             target="_blank"
-            className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] font-medium text-secondary bg-soft py-2 rounded-pill hover:bg-softhover hover:text-ink transition-colors duration-200"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-warm-secondary bg-warm-secondary border border-warm py-2 rounded-full hover:text-warm-primary transition-colors"
           >
-            <RiExternalLinkLine size={14} /> View Site
+            <RiExternalLinkLine size={13} /> View Site
           </Link>
           <button
             type="button"
             onClick={logout}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] font-medium text-white bg-ink py-2 rounded-pill hover:bg-violet transition-colors duration-200"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-[#211B17] py-2 rounded-full hover:bg-black transition-colors cursor-pointer"
           >
-            <RiLogoutBoxRLine size={14} /> Logout
+            <RiLogoutBoxRLine size={13} /> Logout
           </button>
         </div>
       </div>

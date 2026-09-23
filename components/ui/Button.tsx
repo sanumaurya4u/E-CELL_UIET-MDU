@@ -22,24 +22,24 @@ interface ButtonProps {
 
 const VARIANT_CLASSES: Record<ButtonVariant, { base: string; icon: string }> = {
   primary: {
-    base: 'bg-ink text-white border-ink hover:bg-black hover:border-black',
-    icon: 'bg-white text-ink',
+    base: 'bg-[#211B17] text-[#FCFAF6] border-[#211B17] hover:bg-black hover:border-black dark:bg-[#F5EFE5] dark:text-[#120F0D] dark:border-[#F5EFE5] dark:hover:bg-white',
+    icon: 'bg-white text-[#211B17] dark:bg-[#120F0D] dark:text-[#F5EFE5]',
   },
   blue: {
-    base: 'bg-violet text-white border-violet hover:bg-white hover:text-ink',
-    icon: 'bg-white text-violet group-hover:bg-violet group-hover:text-white',
+    base: 'bg-[#E96832] text-white border-[#E96832] hover:bg-[#D95725] hover:border-[#D95725]',
+    icon: 'bg-white text-[#E96832] group-hover:bg-[#E96832] group-hover:text-white',
   },
   outline: {
-    base: 'bg-transparent text-ink border-border hover:bg-ink hover:text-white hover:border-ink',
-    icon: 'bg-soft text-ink group-hover:bg-white group-hover:text-ink',
+    base: 'bg-transparent text-warm-primary border-warm hover:bg-warm-secondary hover:border-warm-strong',
+    icon: 'bg-warm-secondary text-warm-primary group-hover:bg-white group-hover:text-[#211B17]',
   },
   white: {
-    base: 'bg-white text-ink border-[rgba(27,29,30,0.08)] hover:bg-[#f4f4f5] hover:border-[rgba(27,29,30,0.12)]',
-    icon: 'bg-ink text-white',
+    base: 'bg-warm-surface text-warm-primary border-warm hover:bg-warm-secondary hover:border-warm-strong',
+    icon: 'bg-[#211B17] text-white dark:bg-white dark:text-[#120F0D]',
   },
   ghost: {
-    base: 'bg-transparent text-secondary border-transparent hover:text-ink hover:bg-soft',
-    icon: 'bg-soft text-ink group-hover:bg-white group-hover:text-ink',
+    base: 'bg-transparent text-warm-secondary border-transparent hover:text-warm-primary hover:bg-warm-secondary',
+    icon: 'bg-warm-secondary text-warm-primary group-hover:bg-white group-hover:text-[#211B17]',
   },
 };
 

@@ -2,27 +2,26 @@
 
 import React from 'react';
 
-/* Shared admin UI primitives — Tailwind, Awake design language,
-   tight rhythm */
+/* Shared admin UI primitives — Editorial Campus design language, warm tokens */
 
 export const adminInput =
-  'w-full bg-white border border-border rounded-card px-3.5 py-2.5 text-sm text-ink placeholder:text-muted outline-none transition-colors duration-200 focus:border-ink';
+  'w-full bg-warm-secondary border border-warm rounded-xl px-3.5 py-2.5 text-sm text-warm-primary placeholder:text-warm-muted outline-none transition-colors duration-200 focus:border-orange-accent focus:ring-1 focus:ring-orange-accent';
 
-export const adminLabel = 'block text-[13px] font-medium text-ink mb-1.5';
+export const adminLabel = 'block text-xs font-bold uppercase tracking-wider text-warm-primary mb-1.5';
 
-export const adminCard = 'bg-white border border-border rounded-panel';
+export const adminCard = 'bg-warm-surface border border-warm rounded-2xl';
 
 export const adminTh =
-  'text-left text-xs font-semibold uppercase tracking-[0.06em] text-secondary px-4 py-3 border-b border-border bg-soft/50';
+  'text-left text-xs font-bold uppercase tracking-wider text-warm-muted px-4 py-3 border-b border-warm bg-warm-secondary/60';
 
-export const adminTd = 'px-4 py-3 text-sm text-ink align-middle border-b border-bordersubtle';
+export const adminTd = 'px-4 py-3 text-sm text-warm-primary align-middle border-b border-warm';
 
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle: string; action?: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
       <div>
-        <h1 className="font-sans font-medium text-[26px] leading-tight tracking-[-0.03em] text-ink">{title}</h1>
-        <p className="text-sm text-secondary mt-1">{subtitle}</p>
+        <h1 className="font-sans font-extrabold text-2xl leading-tight tracking-tight text-warm-primary">{title}</h1>
+        <p className="text-sm text-warm-secondary mt-1">{subtitle}</p>
       </div>
       {action}
     </div>
@@ -45,19 +44,19 @@ export function Modal({
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-[2000] bg-ink/50 [backdrop-filter:blur(4px)] flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-[2000] bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className={`bg-white border border-border rounded-panel w-full ${wide ? 'max-w-xl' : 'max-w-md'} my-8 shadow-[0_16px_48px_rgba(27,29,30,0.2)]`}
+        className={`bg-warm-surface border border-warm rounded-2xl w-full ${wide ? 'max-w-xl' : 'max-w-md'} my-8 shadow-md`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border">
-          <h2 className="font-sans font-medium text-[15px] tracking-[-0.015em] text-ink">{title}</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-warm">
+          <h2 className="font-sans font-bold text-base tracking-tight text-warm-primary">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-soft text-ink hover:bg-softhover transition-colors duration-200 flex items-center justify-center"
+            className="w-7 h-7 rounded-full bg-warm-secondary text-warm-primary hover:bg-warm-surface transition-colors flex items-center justify-center cursor-pointer"
             aria-label="Close"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -66,26 +65,26 @@ export function Modal({
             </svg>
           </button>
         </div>
-        <div className="p-5">{children}</div>
+        <div className="p-6">{children}</div>
       </div>
     </div>
   );
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  Pending: 'bg-[#ffefda] text-[#b3661d]',
-  Shortlisted: 'bg-[#e2f0ff] text-[#1d6fb3]',
-  Accepted: 'bg-[#e4f6df] text-[#2f7a1d]',
-  Rejected: 'bg-[#fde7eb] text-[#c74a62]',
-  upcoming: 'bg-[#e4f6df] text-[#2f7a1d]',
-  past: 'bg-soft text-secondary',
+  Pending: 'bg-[#FDF0EA] text-[#E96832] border-[#E96832]/30',
+  Shortlisted: 'bg-[#e2f0ff] text-[#1d6fb3] border-[#70b5ff]/40',
+  Accepted: 'bg-[#e4f6df] text-[#2f7a1d] border-[#79d45e]/40',
+  Rejected: 'bg-[#fde7eb] text-[#c74a62] border-[#f4889a]/40',
+  upcoming: 'bg-[#e4f6df] text-[#2f7a1d] border-[#79d45e]/40',
+  past: 'bg-warm-secondary text-warm-muted border-warm',
 };
 
 export function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex py-0.5 px-2 rounded-pill text-[11px] font-medium whitespace-nowrap ${
-        STATUS_STYLES[status] || 'bg-soft text-secondary'
+      className={`inline-flex py-0.5 px-2.5 rounded-full border text-[11px] font-bold whitespace-nowrap ${
+        STATUS_STYLES[status] || 'bg-warm-secondary text-warm-muted border-warm'
       }`}
     >
       {status}
@@ -95,7 +94,7 @@ export function StatusBadge({ status }: { status: string }) {
 
 export function EmptyState({ text }: { text: string }) {
   return (
-    <div className="bg-soft border border-bordersubtle rounded-card py-10 px-5 text-center text-[13px] text-secondary">
+    <div className="bg-warm-surface border border-dashed border-warm rounded-2xl py-10 px-5 text-center text-xs font-medium text-warm-muted">
       {text}
     </div>
   );
@@ -111,14 +110,14 @@ export function FilterPills({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex items-center gap-0.5 bg-[rgba(27,29,30,0.06)] rounded-cta p-1 w-fit flex-wrap">
+    <div className="flex items-center gap-1 bg-warm-secondary border border-warm rounded-full p-1 w-fit flex-wrap">
       {options.map((opt) => (
         <button
           key={opt}
           type="button"
           onClick={() => onChange(opt)}
-          className={`py-1.5 px-3.5 text-[13px] font-medium rounded-cta transition-all duration-200 whitespace-nowrap ${
-            active === opt ? 'bg-ink text-white' : 'text-secondary hover:text-ink hover:bg-white/60'
+          className={`py-1 px-3.5 text-xs font-semibold rounded-full transition-all whitespace-nowrap cursor-pointer ${
+            active === opt ? 'bg-[#211B17] text-[#FCFAF6] shadow-2xs' : 'text-warm-secondary hover:text-warm-primary hover:bg-warm-surface'
           }`}
         >
           {opt}

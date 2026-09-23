@@ -1,52 +1,36 @@
 'use client';
 
 import React from 'react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
 import ApplicationForm from '@/components/contact/ApplicationForm';
 import { useData } from '@/context/DataProvider';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { Sparkles } from 'lucide-react';
 
 export default function ContactPage() {
   const { settings } = useData();
   useScrollReveal();
 
   return (
-    <>
-      <Navbar />
-      <main>
-        {/* Page Hero */}
-        <section className="relative overflow-hidden bg-white">
-          <div className="absolute inset-0 pointer-events-none overflow-hidden bg-[linear-gradient(71deg,rgba(217,243,252,0.38)_11%,rgba(235,248,253,0.45)_45.7%,rgba(255,255,255,0.54)_64.5%,rgba(253,241,211,0.66)_100%)] [mask-image:linear-gradient(to_bottom,black_55%,transparent_92%)] [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_92%)]">
-            <img
-              src="/assets/images/ntUDPbezGATca4W8ayYcVbeQbM.svg"
-              alt=""
-              className="w-full h-full object-cover opacity-90"
-            />
-          </div>
-          <div className="relative max-w-[1272px] mx-auto px-6 pt-[160px] pb-[72px] text-center">
-            <div className="inline-flex py-1.5 px-4 bg-white border border-border rounded-pill text-xs font-medium uppercase tracking-[0.08em] text-secondary mb-5">
-              UIET E-Cell · Recruitment 2026
-            </div>
-            <h1 className="font-sans font-medium text-[clamp(36px,5.5vw,64px)] leading-[1.08] tracking-[-0.04em] text-ink mb-5 [text-wrap:balance]">
-              Love to have you with us —{' '}
-              <span className="font-serif italic font-normal text-[1.05em]">join UIET E-Cell</span>
-            </h1>
-            <p className="text-[clamp(16px,1.8vw,18px)] leading-[1.6] text-secondary max-w-[720px] mx-auto">
-              Fill out your details below. Join 6 active departments and help build the premier student
-              entrepreneurial ecosystem at MDU Rohtak.
-            </p>
-          </div>
-        </section>
+    <div className="pb-20">
+      {/* Page Hero */}
+      <section className="relative overflow-hidden bg-warm-bg pt-12 pb-16 text-center max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-warm-secondary border border-warm text-orange-accent text-xs font-bold tracking-wider uppercase mb-5">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>UIET E-CELL · RECRUITMENT 2026</span>
+        </div>
+        <h1 className="font-sans font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-warm-primary mb-5 leading-tight">
+          Love to have you with us — <span className="text-orange-accent">join UIET E-Cell</span>
+        </h1>
+        <p className="text-base sm:text-lg text-warm-secondary leading-relaxed max-w-2xl mx-auto">
+          Fill out your details below. Join 6 active departments and help build the premier student
+          entrepreneurial ecosystem at MDU Rohtak.
+        </p>
+      </section>
 
-        {/* Application Form Section */}
-        <section className="py-[clamp(56px,7vw,80px)]">
-          <div className="max-w-[1272px] mx-auto px-6">
-            <ApplicationForm settings={settings} />
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </>
+      {/* Application Form Section */}
+      <section className="pb-16 max-w-4xl mx-auto px-4 sm:px-6">
+        <ApplicationForm settings={settings} />
+      </section>
+    </div>
   );
 }

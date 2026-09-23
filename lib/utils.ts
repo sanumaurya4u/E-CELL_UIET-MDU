@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export function formatDate(iso?: string | null): string {
   if (!iso) return '';
   const dateStr = iso.includes('T') ? iso : `${iso}T00:00:00`;
@@ -37,6 +40,6 @@ export function escapeHtml(str: unknown): string {
     .replace(/'/g, '&#039;');
 }
 
-export function cn(...classes: Array<string | false | null | undefined>): string {
-  return classes.filter(Boolean).join(' ');
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }

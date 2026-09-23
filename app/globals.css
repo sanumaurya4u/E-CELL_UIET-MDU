@@ -1,60 +1,83 @@
 /* ============================================================
-   UIET E-Cell — Global Stylesheet (single source of truth)
-   Awake design language · Tailwind v4 · design tokens below
+   UIET E-Cell — Global Stylesheet
+   Modern Editorial Campus Design Language · Tailwind v4
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Light Theme (Primary Visual Reference) */
+  --bg-page: #F8F5EF;
+  --surface-primary: #FCFAF6;
+  --surface-secondary: #F3EFE7;
+  --surface-tertiary: #EFE9DF;
+  --text-primary: #211B17;
+  --text-secondary: #6F665E;
+  --text-muted: #948A80;
+  --border-subtle: #DDD6CC;
+  --border-strong: #C4BBB0;
+  --accent-primary: #E96832;
+  --accent-hover: #D95725;
+  --accent-tint: #FDF0EA;
+  --btn-primary-bg: #211B17;
+  --btn-primary-text: #FCFAF6;
+  --btn-primary-hover: #000000;
+  --card-bg: #FCFAF6;
+  --card-border: #DDD6CC;
+}
+
+.dark {
+  /* Dark Theme */
+  --bg-page: #120F0D;
+  --surface-primary: #171310;
+  --surface-secondary: #1D1815;
+  --surface-tertiary: #25201C;
+  --text-primary: #F5EFE5;
+  --text-secondary: #C9BFB3;
+  --text-muted: #968C82;
+  --border-subtle: #39322C;
+  --border-strong: #4F453E;
+  --accent-primary: #F2763E;
+  --accent-hover: #FF8750;
+  --accent-tint: rgba(242, 118, 62, 0.12);
+  --btn-primary-bg: #F5EFE5;
+  --btn-primary-text: #120F0D;
+  --btn-primary-hover: #FFFFFF;
+  --card-bg: #171310;
+  --card-border: #39322C;
+}
+
 @theme {
-  /* Ink system */
-  --color-ink: #1b1d1e;
-  --color-secondary: rgba(27, 29, 30, 0.6);
-  --color-muted: rgba(27, 29, 30, 0.4);
-  --color-soft: rgba(27, 29, 30, 0.05);
-  --color-softhover: rgba(27, 29, 30, 0.08);
-  --color-bordersubtle: rgba(27, 29, 30, 0.05);
-  --color-border: rgba(27, 29, 30, 0.1);
-  --color-borderstrong: rgba(27, 29, 30, 0.16);
+  --color-warmbg: var(--bg-page);
+  --color-warmsurface: var(--surface-primary);
+  --color-warmsecondary: var(--surface-secondary);
+  --color-warmtertiary: var(--surface-tertiary);
+  --color-warmtext: var(--text-primary);
+  --color-warmmuted: var(--text-secondary);
+  --color-warmfaded: var(--text-muted);
+  --color-warmborder: var(--border-subtle);
+  --color-warmborderstrong: var(--border-strong);
+  --color-warmaccent: var(--accent-primary);
+  --color-warmaccenthover: var(--accent-hover);
+  --color-warmaccenttint: var(--accent-tint);
 
-  /* Brand */
-  --color-violet: #4928fd;
-  --color-violethover: #3b1ee6;
+  /* Semantic Ink & Buttons */
+  --color-ink: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-border: var(--border-subtle);
+  --color-bordersubtle: var(--border-subtle);
+  --color-borderstrong: var(--border-strong);
 
-  /* Signature */
-  --color-sun: #f6e683;
-
-  /* Awake pastels */
-  --color-porange: #ffaf68;
-  --color-pblue: #70b5ff;
-  --color-ppink: #f4889a;
-  --color-pgreen: #79d45e;
-  --color-plilac: #ba81ee;
-
-  /* Pastel tints (20% over white) */
-  --color-porangebg: #ffefda;
-  --color-pbluebg: #e2f0ff;
-  --color-ppinkbg: #fde7eb;
-  --color-pgreenbg: #e4f6df;
-  --color-plilacbg: #f1e6fb;
-
-  /* Deep pastel text */
-  --color-porangedeep: #b3661d;
-  --color-pbluedeep: #1d6fb3;
-  --color-ppinkdeep: #c74a62;
-  --color-pgreendeep: #2f7a1d;
-  --color-plilacdeep: #6b3fa8;
-
-  /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, serif;
-
-  /* Radius scale (reference: 8 / 16 / 24 / 30 / pill) */
+  /* Radius scale */
   --radius-sm2: 8px;
   --radius-card: 16px;
   --radius-panel: 24px;
   --radius-cta: 30px;
-  --radius-pill: 100px;
+  --radius-pill: 9999px;
 }
 
 /* ── BASE ───────────────────────────────────────────────────── */
@@ -62,58 +85,108 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
 }
 
 body {
-  font-family: var(--font-sans);
-  background: #ffffff;
-  color: var(--color-ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 400;
   line-height: 1.6;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 ::selection {
-  background: var(--color-ink);
+  background: var(--accent-primary);
   color: #ffffff;
 }
 
-/* ── SCROLL REVEAL ──────────────────────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+/* Utility classes for theme consistency */
+.bg-warm-bg { background-color: var(--bg-page); }
+.bg-warm-surface { background-color: var(--surface-primary); }
+.bg-warm-secondary { background-color: var(--surface-secondary); }
+.bg-warm-tertiary { background-color: var(--surface-tertiary); }
+.text-warm-primary { color: var(--text-primary); }
+.text-warm-secondary { color: var(--text-secondary); }
+.text-warm-muted { color: var(--text-muted); }
+.border-warm { border-color: var(--border-subtle); }
+.border-warm-strong { border-color: var(--border-strong); }
+.text-orange-accent { color: var(--accent-primary); }
+.bg-orange-accent { background-color: var(--accent-primary); }
+.border-orange-accent { border-color: var(--accent-primary); }
+
+/* Buttons */
+.btn-pill-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.btn-pill-primary:hover {
+  background-color: var(--btn-primary-hover);
+  transform: translateY(-1px);
 }
 
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+.btn-pill-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-pill-secondary:hover {
+  background-color: var(--surface-secondary);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
 }
 
-/* ── ROTATING SERIF WORD (Creativity → Innovation → Strategy) ── */
-@keyframes wordSlideIn {
-  from { opacity: 0; transform: translateY(55%); }
-  to   { opacity: 1; transform: translateY(0); }
+/* Card primitives */
+.card-warm {
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.25rem;
+  transition: all 0.2s ease;
+}
+.card-warm:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
 }
 
-@keyframes wordSlideOut {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-55%); }
+/* Badge primitives */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  background-color: var(--surface-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
 }
 
-.word-in {
-  animation: wordSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.word-out {
-  animation: wordSlideOut 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* ── MARQUEE ────────────────────────────────────────────────── */
+/* ── ANIMATIONS ──────────────────────────────────────────────── */
 @keyframes marqueeScroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
@@ -122,60 +195,15 @@ body {
 .animate-marquee {
   animation: marqueeScroll 30s linear infinite;
 }
-
 .animate-marquee:hover {
   animation-play-state: paused;
 }
 
-/* ── PULSE (hero badge dot) ──────────────────────────────────── */
 @keyframes softPulse {
   0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: 0.7; }
+  50% { transform: scale(1.25); opacity: 0.7; }
 }
 
 .animate-softpulse {
   animation: softPulse 2s infinite ease-in-out;
-}
-
-/* ── TOASTS ─────────────────────────────────────────────────── */
-.ec-toast-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.ec-toast {
-  background: var(--color-ink);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 14px 20px;
-  border-radius: 100px;
-  box-shadow: 0 4px 16px rgba(27, 29, 30, 0.18);
-  max-width: 360px;
-  animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.ec-toast-success { background: var(--color-pgreendeep); }
-.ec-toast-error { background: #c0392b; }
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 480px) {
-  .ec-toast-container {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-  }
-
-  .ec-toast {
-    max-width: 100%;
-  }
 }
