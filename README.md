@@ -7,7 +7,7 @@ Official site for the Entrepreneurship Cell of UIET, Maharshi Dayanand Universit
 - **Next.js 16** (App Router) + TypeScript
 - **Tailwind CSS v4**
 - **Supabase** for live data (events, team, sponsors, stats, applications) and admin authentication
-- **GSAP** for scroll-driven animation
+- **GSAP** for scroll-driven animation and micro-interactions
 
 ## Development
 
