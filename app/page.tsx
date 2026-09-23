@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { Rocket, Lightbulb, Users, ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Trophy, Layers } from 'lucide-react'
+import GalleryGrid from '@/components/about/GalleryGrid'
+import { gallery } from '@/data/gallery'
 
 export default function Home() {
   return (
@@ -334,7 +336,16 @@ export default function Home() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          3. STUDENT LIFECYCLE BANNER SECTION (Warm Card Panel)
+          3. CAMPUS MOMENTS (Life & Energy at UIET E-Cell)
+          ───────────────────────────────────────────────────────────── */}
+      <GalleryGrid
+        gallery={gallery}
+        className="pt-6 pb-14"
+        containerClassName="w-full"
+      />
+
+      {/* ─────────────────────────────────────────────────────────────
+          4. STUDENT LIFECYCLE BANNER SECTION (Warm Card Panel)
           ───────────────────────────────────────────────────────────── */}
       <section className="my-12">
         <div className="bg-warm-secondary border border-warm rounded-3xl p-8 sm:p-12">
@@ -394,7 +405,7 @@ export default function Home() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          4. DIGITAL PASSPORT / ACCREDITATION SECTION (High Contrast Dark)
+          5. DIGITAL PASSPORT / ACCREDITATION SECTION (High Contrast Dark)
           ───────────────────────────────────────────────────────────── */}
       <section className="my-12">
         <div className="bg-[#120F0D] border border-[#39322C] rounded-3xl p-8 sm:p-12 text-[#F5EFE5] shadow-lg">

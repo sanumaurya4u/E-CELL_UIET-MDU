@@ -10,10 +10,20 @@ interface GalleryItem {
   category?: string;
 }
 
-export default function GalleryGrid({ gallery = [] }: { gallery?: GalleryItem[] }) {
+interface GalleryGridProps {
+  gallery?: GalleryItem[];
+  className?: string;
+  containerClassName?: string;
+}
+
+export default function GalleryGrid({
+  gallery = [],
+  className = 'py-[clamp(56px,7vw,80px)]',
+  containerClassName = 'max-w-[1272px] mx-auto px-6',
+}: GalleryGridProps) {
   return (
-    <section className="py-[clamp(56px,7vw,80px)]">
-      <div className="max-w-[1272px] mx-auto px-6">
+    <section className={className}>
+      <div className={containerClassName}>
         <SectionHeader
           badge="Campus Moments"
           title="Life &amp; energy at"
@@ -25,12 +35,12 @@ export default function GalleryGrid({ gallery = [] }: { gallery?: GalleryItem[] 
           {gallery.map((item) => (
             <div
               key={item.id}
-              className="reveal group bg-white border border-border rounded-panel p-3 transition-all duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-borderstrong"
+              className="reveal group bg-white dark:bg-[#171310] border border-border dark:border-[#39322C] rounded-panel p-3 transition-all duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-borderstrong shadow-2xs"
             >
               {/* Nested image frame — image sits inside the padded card
                   with its own rounded, clipped container so the hover
                   zoom never breaks the card edges */}
-              <div className="relative w-full h-[260px] overflow-hidden rounded-card bg-[#f8fafc]">
+              <div className="relative w-full h-[260px] overflow-hidden rounded-card bg-[#f8fafc] dark:bg-[#1F1A17]">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -38,14 +48,14 @@ export default function GalleryGrid({ gallery = [] }: { gallery?: GalleryItem[] 
                   sizes="(max-width: 768px) 100vw, (max-width: 1272px) 50vw, 33vw"
                   className="object-cover object-center transition-transform duration-400 group-hover:scale-[1.05]"
                 />
-                <span className="absolute top-3 left-3 bg-white/90 [backdrop-filter:blur(8px)] text-ink text-[11px] font-medium py-1 px-3 rounded-pill">
+                <span className="absolute top-3 left-3 bg-white/90 dark:bg-[#171310]/90 [backdrop-filter:blur(8px)] text-ink dark:text-[#F5EFE5] text-[11px] font-medium py-1 px-3 rounded-pill shadow-xs">
                   {item.category}
                 </span>
               </div>
               <div className="px-2 pt-4 pb-2 flex flex-col gap-1.5">
-                <h4 className="font-sans font-medium text-lg tracking-[-0.015em] text-ink">{item.title}</h4>
+                <h4 className="font-sans font-semibold text-lg tracking-tight text-ink dark:text-[#F5EFE5]">{item.title}</h4>
                 {item.description && (
-                  <p className="text-sm leading-[1.55] text-secondary">{item.description}</p>
+                  <p className="text-sm leading-relaxed text-secondary dark:text-[#C9BFB3]">{item.description}</p>
                 )}
               </div>
             </div>
