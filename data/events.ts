@@ -54,7 +54,7 @@ export const events: EventItem[] = [
     title: 'E-Summit 2024',
     tagline: 'Annual Student Entrepreneurship Gathering',
     description:
-      "UIET E-Cell's annual event featured student team showcases, interactive discussions, and inspiring talks from guest speakers across industries. Over 600 students attended.",
+      "E-Cell | UIET MDU Rohtak's annual event featured student team showcases, interactive discussions, and inspiring talks from guest speakers across industries. Over 600 students attended.",
     date: '2024-11-25',
     time: '9:00 AM – 7:00 PM',
     venue: 'MDU Main Campus, Rohtak',

@@ -7,10 +7,10 @@ export default function FacultySection({ faculty }: { faculty: Faculty }) {
   if (!faculty) return null;
 
   return (
-    <section className="py-[clamp(56px,7vw,80px)]">
-      <div className="max-w-[1272px] mx-auto px-6">
-        <div className="reveal bg-white border border-border rounded-panel p-8 md:p-10 flex flex-col md:flex-row items-center md:items-start gap-8">
-          <div className="w-40 h-40 rounded-panel overflow-hidden shrink-0 bg-[#f8fafc]">
+    <section className="py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="reveal card-warm p-8 md:p-10 flex flex-col md:flex-row items-center md:items-start gap-8">
+          <div className="w-40 h-40 rounded-2xl overflow-hidden shrink-0 bg-warm-secondary border border-warm">
             <Image
               src={faculty.photo || '/gallery/page_28.jpg'}
               alt={faculty.name}
@@ -21,12 +21,12 @@ export default function FacultySection({ faculty }: { faculty: Faculty }) {
           </div>
 
           <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
-            <span className="text-[13px] font-medium text-secondary bg-soft py-1 px-3 rounded-pill">
-              Faculty Advisor
+            <span className="badge-pill text-xs font-semibold text-orange-accent">
+              Faculty Advisor · E-Cell | UIET MDU Rohtak
             </span>
-            <h3 className="font-sans font-medium text-2xl tracking-[-0.02em] text-ink">{faculty.name}</h3>
-            <p className="text-[15px] text-secondary">{faculty.designation}</p>
-            {faculty.bio && <p className="text-[15px] leading-[1.65] text-secondary max-w-[640px] mt-2">{faculty.bio}</p>}
+            <h3 className="font-sans font-bold text-2xl tracking-tight text-warm-primary">{faculty.name}</h3>
+            <p className="text-sm font-medium text-warm-secondary">{faculty.designation}</p>
+            {faculty.bio && <p className="text-sm leading-relaxed text-warm-secondary max-w-2xl mt-2">{faculty.bio}</p>}
 
             {faculty.email && (
               <div className="mt-4">

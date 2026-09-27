@@ -35,9 +35,11 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-[linear-gradient(71deg,rgba(217,243,252,0.38)_11%,rgba(235,248,253,0.45)_45.7%,rgba(255,255,255,0.54)_64.5%,rgba(253,241,211,0.66)_100%)]">
       <div className="w-full max-w-md bg-white border border-border rounded-panel p-8 shadow-[0_8px_32px_rgba(27,29,30,0.08)]">
         <div className="flex flex-col items-center text-center mb-8">
-          <Image src="/logo.png" alt="UIET E-Cell Logo" width={52} height={52} className="rounded-xl mb-4" />
-          <h1 className="font-sans font-medium text-2xl tracking-[-0.03em] text-ink">UIET E-Cell Admin</h1>
-          <p className="text-sm text-secondary mt-1">Protected Management Board &amp; Application CMS</p>
+          <div className="h-14 px-4 rounded-2xl bg-white border border-warm flex items-center justify-center mb-4 shadow-2xs">
+            <Image src="/logo.png" alt="E-Cell | UIET MDU Rohtak Logo" width={120} height={58} className="h-9 w-auto object-contain" />
+          </div>
+          <h1 className="font-sans font-bold text-2xl tracking-tight text-ink">E-Cell | UIET MDU Rohtak</h1>
+          <p className="text-sm text-secondary mt-1">Admin Board &amp; Content Management</p>
         </div>
 
         {error && (

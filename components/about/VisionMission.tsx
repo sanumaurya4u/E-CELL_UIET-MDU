@@ -2,59 +2,63 @@ import React from 'react';
 
 export default function VisionMission() {
   return (
-    <section className="py-[clamp(56px,7vw,80px)]">
-      <div className="max-w-[1272px] mx-auto px-6">
+    <section className="py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Vision Card */}
-          <div className="reveal bg-white border border-border rounded-panel p-8 md:p-10 transition-all duration-200 hover:-translate-y-1 hover:border-borderstrong">
-            <span className="text-[13px] font-medium text-secondary uppercase tracking-[0.06em]">
-              Vision Statement
+          <div className="reveal card-warm p-8 md:p-10">
+            <span className="text-xs font-bold text-orange-accent uppercase tracking-wider">
+              Our Vision
             </span>
-            <h3 className="font-sans font-medium text-[clamp(22px,2.6vw,30px)] leading-[1.2] tracking-[-0.03em] text-ink my-4">
-              &ldquo;Inspiring a Generation of{' '}
-              <span className="font-serif italic font-normal text-[1.05em]">Changemakers</span>&rdquo;
+            <h3 className="font-sans font-extrabold text-2xl sm:text-3xl leading-snug tracking-tight text-warm-primary my-3">
+              Ideas into <span className="text-orange-accent">Impact</span>
             </h3>
-            <ul className="flex flex-col gap-4 text-[15px] leading-[1.65] text-secondary">
+            <p className="text-sm text-warm-secondary leading-relaxed mb-5">
+              Promoting entrepreneurship &amp; innovation at UIET by building a supportive environment where student ideas can grow into real-world solutions.
+            </p>
+            <ul className="flex flex-col gap-3.5 text-sm leading-relaxed text-warm-secondary">
               <li>
-                <strong className="text-ink font-medium">1. Inspire Innovation:</strong> Encouraging every
-                student on campus to think differently and explore bold ideas beyond traditional paths.
+                <strong className="text-warm-primary font-semibold">1. Entrepreneurship &amp; Innovation:</strong>{' '}
+                Encouraging students across UIET to explore creative problem-solving and practical innovation.
               </li>
               <li>
-                <strong className="text-ink font-medium">2. Empower Future Founders:</strong> Giving students
-                practical skills, frameworks, and confidence to build real startups.
+                <strong className="text-warm-primary font-semibold">2. Student-Led Ventures:</strong>{' '}
+                Providing early feedback, peer collaboration, and a platform to showcase student startups.
               </li>
               <li>
-                <strong className="text-ink font-medium">3. Create Meaningful Impact:</strong> Turning raw
-                student concepts into sustainable, scalable solutions for society.
+                <strong className="text-warm-primary font-semibold">3. Startup Culture:</strong>{' '}
+                Cultivating an approachable, action-oriented entrepreneurial community on the MDU Rohtak campus.
               </li>
             </ul>
           </div>
 
           {/* Mission Card */}
-          <div className="reveal bg-white border border-border rounded-panel p-8 md:p-10 transition-all duration-200 hover:-translate-y-1 hover:border-borderstrong">
-            <span className="text-[13px] font-medium text-secondary uppercase tracking-[0.06em]">
-              Mission Statement
+          <div className="reveal card-warm p-8 md:p-10">
+            <span className="text-xs font-bold text-orange-accent uppercase tracking-wider">
+              Our Focus
             </span>
-            <h3 className="font-sans font-medium text-[clamp(22px,2.6vw,30px)] leading-[1.2] tracking-[-0.03em] text-ink my-4">
-              &ldquo;Empowering Students to{' '}
-              <span className="font-serif italic font-normal text-[1.05em]">Learn. Collaborate. Succeed.</span>&rdquo;
+            <h3 className="font-sans font-extrabold text-2xl sm:text-3xl leading-snug tracking-tight text-warm-primary my-3">
+              Learn, Collaborate &amp; <span className="text-orange-accent">Build</span>
             </h3>
-            <ul className="flex flex-col gap-4 text-[15px] leading-[1.65] text-secondary">
+            <p className="text-sm text-warm-secondary leading-relaxed mb-5">
+              Supporting the Entrepreneurship Cell of UIET, MDU, Rohtak through hands-on programs and peer-to-peer learning.
+            </p>
+            <ul className="flex flex-col gap-3.5 text-sm leading-relaxed text-warm-secondary">
               <li>
-                <strong className="text-ink font-medium">• Entrepreneurial Mindset:</strong> Fostering
-                creative thinking and problem-solving across all engineering &amp; management streams.
+                <strong className="text-warm-primary font-semibold">• Entrepreneurial Learning:</strong>{' '}
+                Organizing practical workshops, speaker talks, and skill-building sessions on campus.
               </li>
               <li>
-                <strong className="text-ink font-medium">• Knowledge Sharing:</strong> Hosting practical
-                masterclasses, workshops, and speaker series with industry leaders.
+                <strong className="text-warm-primary font-semibold">• Mentorship:</strong>{' '}
+                Connecting aspiring student founders with alumni mentors and faculty advisors.
               </li>
               <li>
-                <strong className="text-ink font-medium">• Student Ideathons:</strong> Creating opportunities
-                to present ideas, receive faculty mentorship, and secure seed support.
+                <strong className="text-warm-primary font-semibold">• Pitching &amp; Ideathons:</strong>{' '}
+                Hosting campus competitions such as the Eureka Pitching Competition and Campus Fix Challenge.
               </li>
               <li>
-                <strong className="text-ink font-medium">• Diverse Community:</strong> Uniting students across
-                CSE, ECE, Mechanical, Biotech, MBA, and Commerce.
+                <strong className="text-warm-primary font-semibold">• Cross-Department Collaboration:</strong>{' '}
+                Bringing together students from engineering, management, commerce, and sciences.
               </li>
             </ul>
           </div>

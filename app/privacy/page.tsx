@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Privacy Policy | UIET E-Cell',
+  title: 'Privacy Policy | E-Cell | UIET MDU Rohtak',
 };
 
 const sectionClass = 'font-sans font-bold text-lg tracking-tight text-warm-primary mb-3';
@@ -15,17 +15,17 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="text-xs text-warm-muted mb-8 pb-4 border-b border-warm">
-          Last updated: 2026 · UIET E-Cell, Maharshi Dayanand University, Rohtak
+          Last updated: 2026 · E-Cell | UIET MDU Rohtak (Entrepreneurship Cell of UIET, MDU, Rohtak)
         </p>
 
         <div className="flex flex-col gap-6">
           <section>
             <h2 className={sectionClass}>1. Overview</h2>
             <p className={textClass}>
-              UIET E-Cell (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) operates the official platform for the
+              E-Cell | UIET MDU Rohtak (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) operates the official platform for the
               Entrepreneurship Cell of UIET, Maharshi Dayanand University (MDU), Rohtak. This Privacy
               Policy explains how we collect, use, and protect your information when you interact with
-              our platform, register for events, or apply for mentorship and incubation.
+              our platform, register for events, or apply for mentorship and student-led venture support.
             </p>
           </section>
 
@@ -39,10 +39,15 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className={sectionClass}>3. How We Use Information</h2>
+            <h2 className={sectionClass}>3. How We Use Information &amp; Contact</h2>
             <p className={textClass}>
-              Information collected is strictly used for organizing campus entrepreneurship events, facilitating
-              mentor connections, verifying eligibility for competitions, and maintaining tamper-evident activity records.
+              Information collected is strictly used for organizing campus entrepreneurship events, workshops,
+              and hackathons, facilitating mentor connections, and supporting student-led ventures. For any questions,
+              contact us at{' '}
+              <a href="mailto:ecellmdu@gmail.com" className="text-orange-accent font-semibold hover:underline">
+                ecellmdu@gmail.com
+              </a>
+              .
             </p>
           </section>
         </div>

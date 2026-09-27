@@ -7,8 +7,50 @@ import Footer from '@/components/layout/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'UIET E-CELL | Entrepreneurship Cell, UIET MDU Rohtak',
-  description: 'The central hub for student entrepreneurs, alumni mentors, and startup resources at UIET MDU.',
+  metadataBase: new URL('https://ecellmdu.vercel.app'),
+  title: {
+    default: 'E-Cell | UIET MDU Rohtak',
+    template: '%s | E-Cell | UIET MDU Rohtak',
+  },
+  description:
+    'Promoting entrepreneurship & innovation at UIET through student-led ventures, events, mentorship, and entrepreneurial opportunities.',
+  keywords: [
+    'E-Cell',
+    'UIET MDU Rohtak',
+    'Entrepreneurship Cell of UIET, MDU, Rohtak',
+    'Ideas into Impact',
+    'Student-led ventures',
+    'Maharshi Dayanand University',
+  ],
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
+  openGraph: {
+    title: 'E-Cell | UIET MDU Rohtak',
+    description:
+      'Promoting entrepreneurship & innovation at UIET through student-led ventures, events, mentorship, and entrepreneurial opportunities.',
+    url: 'https://ecellmdu.vercel.app/',
+    siteName: 'E-Cell | UIET MDU Rohtak',
+    locale: 'en_IN',
+    type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 612,
+        height: 292,
+        alt: 'E-Cell | UIET MDU Rohtak',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'E-Cell | UIET MDU Rohtak',
+    description:
+      'Promoting entrepreneurship & innovation at UIET through student-led ventures, events, mentorship, and entrepreneurial opportunities.',
+    images: ['/logo.png'],
+  },
 }
 
 export default function RootLayout({

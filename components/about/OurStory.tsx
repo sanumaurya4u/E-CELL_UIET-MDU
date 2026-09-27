@@ -1,26 +1,25 @@
 import React from 'react';
+import { ECELL_INFO } from '@/lib/constants';
 
 export default function OurStory() {
   return (
-    <section className="py-[clamp(56px,7vw,80px)]">
-      <div className="max-w-[1272px] mx-auto px-6">
-        <div className="reveal bg-soft border border-bordersubtle rounded-panel p-8 md:p-12">
-          <div className="text-[13px] font-medium text-secondary uppercase tracking-[0.06em] mb-4">
-            Origin &amp; Purpose
+    <section className="py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="reveal bg-warm-secondary border border-warm rounded-3xl p-8 md:p-12">
+          <div className="text-xs font-bold text-orange-accent uppercase tracking-wider mb-3">
+            Who We Are
           </div>
-          <h2 className="font-sans font-medium text-[clamp(28px,4vw,44px)] leading-[1.15] tracking-[-0.035em] text-ink mb-6 [text-wrap:balance]">
-            Why we built{' '}
-            <span className="font-serif italic font-normal text-[1.05em]">UIET E-Cell</span>
+          <h2 className="font-sans font-extrabold text-3xl sm:text-4xl leading-tight tracking-tight text-warm-primary mb-5">
+            About <span className="text-orange-accent">{ECELL_INFO.name}</span>
           </h2>
-          <p className="text-[17px] leading-[1.65] text-secondary max-w-[820px] mb-4">
-            It started with a simple belief on our campus — that UIET MDU has no shortage of brilliant,
-            driven students, but needed a dedicated student-run ecosystem to turn creative thinking and
-            technical talent into real-world impact.
+          <p className="text-base sm:text-lg leading-relaxed text-warm-primary font-medium max-w-3xl mb-4">
+            E-Cell, UIET MDU is a student-driven entrepreneurship and innovation platform focused on
+            encouraging students to transform ideas into meaningful ventures.
           </p>
-          <p className="text-[15px] leading-[1.7] text-secondary max-w-[820px]">
-            Established in 2024, UIET E-Cell has rapidly grown into a vibrant cross-disciplinary community.
-            We organize hands-on masterclasses, 24-hour campus ideathons, speaker series with startup
-            founders, and networking delegations that bridge academia with the Indian startup ecosystem.
+          <p className="text-sm sm:text-base leading-relaxed text-warm-secondary max-w-3xl">
+            As the {ECELL_INFO.primaryIdentity}, we bring together students from engineering and
+            university departments to explore startup culture, participate in pitching competitions
+            and campus ideathons, learn from mentors, and build student-led ventures together.
           </p>
         </div>
       </div>

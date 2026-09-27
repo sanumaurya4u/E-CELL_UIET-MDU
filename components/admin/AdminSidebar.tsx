@@ -14,6 +14,7 @@ import {
   RiSettings4Line,
   RiLogoutBoxRLine,
   RiExternalLinkLine,
+  RiArticleLine,
 } from 'react-icons/ri';
 import { useAdminAuth } from '@/context/AdminAuthProvider';
 
@@ -29,6 +30,7 @@ export const NAV_GROUPS = [
       { id: 'events', label: 'Events', icon: RiCalendarEventLine },
       { id: 'team', label: 'Team', icon: RiTeamLine },
       { id: 'gallery', label: 'Gallery', icon: RiImage2Line },
+      { id: 'blog', label: 'Blog', icon: RiArticleLine },
       { id: 'partners', label: 'Partners', icon: RiHandHeartLine },
     ],
   },
@@ -57,12 +59,12 @@ export default function AdminSidebar({
       {/* Brand */}
       <div className="px-5 pt-6 pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-warm-secondary border border-warm flex items-center justify-center shrink-0">
-            <Image src="/logo.png" alt="UIET E-Cell" width={28} height={28} className="rounded-md" />
+          <div className="h-10 px-2.5 rounded-xl bg-white border border-warm flex items-center justify-center shrink-0">
+            <Image src="/logo.png" alt="E-Cell | UIET MDU Rohtak" width={88} height={42} className="h-6 w-auto object-contain" />
           </div>
           <div className="leading-tight min-w-0">
-            <div className="font-sans font-semibold text-[15px] tracking-[-0.015em] text-ink">E-Cell Admin</div>
-            <div className="text-xs text-muted mt-0.5">UIET · MDU Rohtak</div>
+            <div className="font-sans font-bold text-sm tracking-tight text-warm-primary truncate">E-Cell | UIET MDU</div>
+            <div className="text-[11px] text-warm-muted mt-0.5">Admin · Rohtak</div>
           </div>
         </div>
       </div>

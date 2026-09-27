@@ -1,62 +1,99 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
+import AdminCmsClient from './AdminCmsClient'
 
-export default async function AdminDashboard() {
+export default async function AdminDashboardPage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   if (!user) {
     redirect('/login')
   }
 
   const { data: profile } = await supabase
     .from('users')
-    .select('role')
+    .select('role, full_name')
     .eq('id', user.id)
     .single()
 
   if (profile?.role !== 'admin') {
-    redirect('/dashboard')
+    redirect('/login?message=Access restricted to authorized E-Cell Administrators.')
+  }
+
+  // Fetch all CMS datasets in parallel on the server
+  const [
+    { data: events },
+    { data: eventRsvps },
+    { data: announcements },
+    { data: resources },
+    { data: startups },
+    { data: mentors },
+    { data: mentorshipRequests },
+    { data: siteImages },
+    { data: siteBlocksRows },
+    { data: applications },
+    { data: blogs },
+  ] = await Promise.all([
+    supabase.from('events').select('*').order('date', { ascending: false }),
+    supabase
+      .from('event_rsvps')
+      .select('*')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('announcements')
+      .select('*')
+      .order('is_pinned', { ascending: false })
+      .order('created_at', { ascending: false }),
+    supabase.from('resources').select('*').order('created_at', { ascending: false }),
+    supabase.from('startups').select('*').order('created_at', { ascending: false }),
+    supabase
+      .from('users')
+      .select('*')
+      .eq('role', 'mentor')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('mentorship_requests')
+      .select('*')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('site_images')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false }),
+    supabase.from('site_blocks').select('*'),
+    supabase
+      .from('applications')
+      .select('*')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('blogs')
+      .select('*')
+      .order('created_at', { ascending: false }),
+  ])
+
+  const siteBlocks: Record<string, any> = {}
+  for (const row of siteBlocksRows || []) {
+    siteBlocks[row.key] = row.data
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-12 px-4 sm:px-6 lg:px-8 mb-20">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">Manage events, users, and startups.</p>
-        </div>
-        <Link href="/dashboard" className="text-sm font-medium text-indigo-600 hover:underline">
-          &larr; Back to Student Dashboard
-        </Link>
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="p-6 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 shadow-sm">
-          <h2 className="text-xl font-bold mb-2">Events</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Manage upcoming E-Cell events.</p>
-          <Link href="/admin/events/new" className="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-medium transition-colors">
-            + Create New Event
-          </Link>
-        </div>
-
-        <div className="p-6 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 shadow-sm">
-          <h2 className="text-xl font-bold mb-2">Startups</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Review startup directory submissions.</p>
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium opacity-50 cursor-not-allowed">
-            Manage Startups (Phase 4)
-          </button>
-        </div>
-
-        <div className="p-6 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 shadow-sm">
-          <h2 className="text-xl font-bold mb-2">Users</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Manage student and mentor roles.</p>
-          <button className="px-4 py-2 bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-200 rounded-md text-sm font-medium">
-            View Users
-          </button>
-        </div>
-      </div>
-    </div>
+    <AdminCmsClient
+      adminName={profile?.full_name || user.email?.split('@')[0] || 'Admin'}
+      adminEmail={user.email || ''}
+      events={events || []}
+      eventRsvps={eventRsvps || []}
+      announcements={announcements || []}
+      resources={resources || []}
+      startups={startups || []}
+      mentors={mentors || []}
+      mentorshipRequests={mentorshipRequests || []}
+      siteImages={siteImages || []}
+      siteBlocks={siteBlocks}
+      applications={applications || []}
+      blogs={blogs || []}
+    />
   )
 }

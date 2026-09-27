@@ -19,6 +19,7 @@ import type {
   Faculty,
   SiteSettings,
   Application,
+  BlogPost,
 } from '@/lib/types';
 
 interface DataContextValue {
@@ -40,6 +41,8 @@ interface DataContextValue {
   setSettings: Dispatch<SetStateAction<SiteSettings>>;
   applications: Application[];
   setApplications: Dispatch<SetStateAction<Application[]>>;
+  blogs: BlogPost[];
+  setBlogs: Dispatch<SetStateAction<BlogPost[]>>;
   isLoading: boolean;
   refreshData: () => void;
 }
@@ -63,6 +66,8 @@ const DataContext = createContext<DataContextValue>({
   setSettings: () => {},
   applications: [],
   setApplications: () => {},
+  blogs: [],
+  setBlogs: () => {},
   isLoading: false,
   refreshData: () => {},
 });
@@ -77,6 +82,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [faculty, setFaculty] = useState<Faculty>(defaultFaculty);
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchLiveSupabase = async () => {
@@ -125,13 +131,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
         });
       }
 
-      // 5. Applications
-      const { data: appsData, error: appsErr } = await supabase
-        .from('applications')
+      // 5. Site Images / Gallery
+      const { data: imgData, error: imgErr } = await supabase
+        .from('site_images')
         .select('*')
-        .order('id', { ascending: false });
-      if (!appsErr && appsData) {
-        setApplications(appsData);
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
+      if (!imgErr && imgData && imgData.length > 0) {
+        setGallery(
+          imgData.map((img: any) => ({
+            id: img.id,
+            title: img.title,
+            category: img.category || 'Events',
+            image: img.image_url,
+            description: img.description || '',
+          }))
+        );
+      }
+
+      // 6. Blogs
+      const { data: blogsData, error: blogsErr } = await supabase
+        .from('blogs')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!blogsErr && blogsData) {
+        setBlogs(blogsData);
       }
     } catch (err) {
       console.warn('[DataProvider] Supabase fetch fallback to static:', err);
@@ -142,35 +167,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      // 1. Try loading cached local storage
-      try {
-        if (typeof window !== 'undefined') {
-          const cachedApps = localStorage.getItem('ECELL_APPLICATIONS');
-          if (cachedApps) setApplications(JSON.parse(cachedApps));
-
-          const cachedEvents = localStorage.getItem('ECELL_EVENTS');
-          if (cachedEvents) setEvents(JSON.parse(cachedEvents));
-
-          const cachedTeam = localStorage.getItem('ECELL_TEAM');
-          if (cachedTeam) setTeam(JSON.parse(cachedTeam));
-
-          const cachedSponsors = localStorage.getItem('ECELL_SPONSORS');
-          if (cachedSponsors) setSponsors(JSON.parse(cachedSponsors));
-
-          const cachedStats = localStorage.getItem('ECELL_STATS');
-          if (cachedStats) setStats(JSON.parse(cachedStats));
-
-          const cachedGallery = localStorage.getItem('ECELL_GALLERY');
-          if (cachedGallery) setGallery(JSON.parse(cachedGallery));
-
-          const cachedSettings = localStorage.getItem('ECELL_SETTINGS');
-          if (cachedSettings) setSettings(JSON.parse(cachedSettings));
-        }
-      } catch (e) {
-        console.warn('[DataProvider] LocalStorage load note:', e);
-      }
-
-      // 2. Fetch live from Supabase if configured
       if (supabase) {
         await fetchLiveSupabase();
       }
@@ -200,6 +196,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setSettings,
         applications,
         setApplications,
+        blogs,
+        setBlogs,
         isLoading,
         refreshData: fetchLiveSupabase,
       }}

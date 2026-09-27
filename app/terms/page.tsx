@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Terms & Conditions | UIET E-Cell',
+  title: 'Terms & Conditions | E-Cell | UIET MDU Rohtak',
 };
 
 const sectionClass = 'font-sans font-bold text-lg tracking-tight text-warm-primary mb-3';
@@ -15,15 +15,15 @@ export default function TermsPage() {
           Terms &amp; Conditions
         </h1>
         <p className="text-xs text-warm-muted mb-8 pb-4 border-b border-warm">
-          Last updated: 2026 · UIET E-Cell, Maharshi Dayanand University, Rohtak
+          Last updated: 2026 · E-Cell | UIET MDU Rohtak (Entrepreneurship Cell of UIET, MDU, Rohtak)
         </p>
 
         <div className="flex flex-col gap-6">
           <section>
             <h2 className={sectionClass}>1. Acceptance of Terms</h2>
             <p className={textClass}>
-              By accessing or using the UIET E-Cell platform and participating in our
-              competitions, workshops, and mentorship initiatives, you agree to comply with these terms.
+              By accessing or using the E-Cell | UIET MDU Rohtak platform and participating in our
+              events, workshops, hackathons, and mentorship initiatives, you agree to comply with these terms.
             </p>
           </section>
 
@@ -38,7 +38,7 @@ export default function TermsPage() {
           <section>
             <h2 className={sectionClass}>3. Intellectual Property</h2>
             <p className={textClass}>
-              UIET E-Cell asserts no ownership over student startup intellectual property. All inventions, code,
+              E-Cell | UIET MDU Rohtak asserts no ownership over student startup intellectual property. All inventions, code,
               and pitch decks remain 100% the property of their respective student founders.
             </p>
           </section>

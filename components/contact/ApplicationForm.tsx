@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { useToast } from '@/context/ToastProvider';
-import { useData } from '@/context/DataProvider';
-import { supabase } from '@/lib/supabase';
+import { submitApplication } from '@/app/contact/actions';
 
 interface AppSettings {
   web3formsKey?: string;
@@ -20,6 +19,7 @@ interface ApplicationFormData {
   department: string;
   linkedin: string;
   whyJoin: string;
+  website_hp: string;
 }
 
 const inputClass =
@@ -29,9 +29,9 @@ const labelClass = 'block text-sm font-medium text-ink mb-2';
 
 export default function ApplicationForm({ settings }: { settings?: AppSettings }) {
   const { showToast } = useToast();
-  const { applications, setApplications } = useData();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const [formData, setFormData] = useState<ApplicationFormData>({
     fullName: '',
@@ -43,6 +43,7 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
     department: '',
     linkedin: '',
     whyJoin: '',
+    website_hp: '',
   });
 
   const [charCount, setCharCount] = useState(0);
@@ -60,6 +61,7 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg('');
 
     if (
       !formData.fullName ||
@@ -71,6 +73,7 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
       !formData.department ||
       !formData.whyJoin
     ) {
+      setErrorMsg('Please fill in all required fields marked with *');
       showToast('Please fill in all required fields marked with *', 'error');
       return;
     }
@@ -78,51 +81,29 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
     setIsSubmitting(true);
 
     try {
-      const branchYear = `${formData.year}, ${formData.branch}`;
-      const submittedOn = new Date().toISOString();
-
-      const newApp = {
-        id: Date.now(),
-        name: formData.fullName,
-        enrollment: formData.enrollment,
-        branchYear: branchYear,
-        branchyear: branchYear,
-        deptInterest: formData.department,
-        deptinterest: formData.department,
-        email: formData.email,
-        phone: formData.phone,
-        whyJoin: formData.whyJoin,
-        whyjoin: formData.whyJoin,
-        linkedin: formData.linkedin || null,
-        submittedOn: submittedOn,
-        submittedon: submittedOn,
-        status: 'Pending',
-        notes: '',
-        history: [{ status: 'Pending', by: 'System (Public Form)', date: submittedOn }],
-      };
- 
-      // Update local state and cache
-      const nextApps = [newApp, ...applications];
-      setApplications(nextApps);
-      try {
-        localStorage.setItem('ECELL_APPLICATIONS', JSON.stringify(nextApps));
-      } catch {}
-
-      // 1. Supabase insert
-      if (supabase) {
-        try {
-          await supabase.from('applications').insert([newApp]);
-        } catch (dbErr) {
-          console.warn('[Application] Supabase insert warning:', dbErr);
-        }
+      // 1. Server Action submission with validation & RLS protection
+      const res = await submitApplication(formData);
+      if (res?.error) {
+        setErrorMsg(res.error);
+        showToast(res.error, 'error');
+        setIsSubmitting(false);
+        return;
       }
 
-      // 2. Web3Forms email forwarding
+      const branchYear = `${formData.year}, ${formData.branch}`;
+
+      // 2. Optional Web3Forms email forwarding
       try {
-        const web3Key = settings?.web3formsKey || process.env.NEXT_PUBLIC_WEB3FORMS_KEY || 'ca0b970d-2396-4be4-96d0-f4f2697acddc';
+        const web3Key =
+          settings?.web3formsKey ||
+          process.env.NEXT_PUBLIC_WEB3FORMS_KEY ||
+          'ca0b970d-2396-4be4-96d0-f4f2697acddc';
         const web3Body = new FormData();
         web3Body.append('access_key', web3Key);
-        web3Body.append('subject', `New UIET E-Cell Application: ${formData.fullName} (${formData.department})`);
+        web3Body.append(
+          'subject',
+          `New E-Cell | UIET MDU Rohtak Application: ${formData.fullName} (${formData.department})`
+        );
         web3Body.append('name', formData.fullName);
         web3Body.append('email', formData.email);
         web3Body.append('phone', formData.phone);
@@ -141,26 +122,6 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
         console.warn('[Application] Web3Forms forward warning:', w3Err);
       }
 
-      // 3. EmailJS auto-confirmation
-      if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID) {
-        try {
-          const emailjs = await import('@emailjs/browser');
-          emailjs.init({ publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY! });
-          await emailjs.send(
-            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-            process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-            {
-              to_email: formData.email,
-              applicant_name: formData.fullName,
-              department: formData.department,
-              ecell_email: 'ecelluietfs@gmail.com',
-            }
-          );
-        } catch (eJsErr) {
-          console.warn('[Application] EmailJS confirmation warning:', eJsErr);
-        }
-      }
-
       setIsSuccess(true);
       showToast('Application submitted successfully!', 'success');
       setFormData({
@@ -173,10 +134,12 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
         department: '',
         linkedin: '',
         whyJoin: '',
+        website_hp: '',
       });
       setCharCount(0);
     } catch (err) {
       console.error('[Application Submission Error]:', err);
+      setErrorMsg('Submission failed. Please try again.');
       showToast('Submission failed. Please try again.', 'error');
     } finally {
       setIsSubmitting(false);
@@ -184,18 +147,36 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
   };
 
   return (
-    <div className="bg-white border border-border rounded-panel p-6 md:p-10 max-w-[900px] mx-auto">
+    <div className="card-warm p-6 md:p-10 max-w-[900px] mx-auto">
       {isSuccess && (
         <div className="bg-pgreenbg border border-pgreen/40 rounded-card p-6 mb-8">
           <h3 className="font-sans font-medium text-lg text-ink mb-1">Application Received!</h3>
           <p className="text-[15px] leading-[1.6] text-secondary">
-            Thank you for applying to UIET E-Cell. Our leadership board reviews applications on a rolling
+            Thank you for applying to E-Cell | UIET MDU Rohtak. Our leadership board reviews applications on a rolling
             basis and will reach out to you via email within 5-7 days.
           </p>
         </div>
       )}
 
+      {errorMsg && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-700 rounded-card p-4 mb-6 text-sm font-medium">
+          {errorMsg}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
+        {/* Honeypot anti-spam field */}
+        <input
+          type="text"
+          name="website_hp"
+          value={formData.website_hp}
+          onChange={handleChange}
+          tabIndex={-1}
+          autoComplete="off"
+          className="hidden"
+          aria-hidden="true"
+        />
+
         {/* Row 1: Name & Enrollment */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -346,7 +327,7 @@ export default function ApplicationForm({ settings }: { settings?: AppSettings }
         {/* Row 6: Statement of Purpose */}
         <div>
           <label className={labelClass} htmlFor="whyJoin">
-            Why do you want to join UIET E-Cell? <span className="text-ink">*</span>
+            Why do you want to join E-Cell | UIET MDU Rohtak? <span className="text-ink">*</span>
           </label>
           <textarea
             id="whyJoin"

@@ -157,3 +157,32 @@ export interface Application {
   history?: Array<{ status: string; by: string; date: string }>;
   [key: string]: unknown;
 }
+
+export type BlogStatus = 'draft' | 'published' | 'archived';
+
+export interface BlogPost {
+  id: string | number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  cover_image_url: string | null;
+  additional_images?: string[];
+  category: string;
+  tags: string[];
+  author_name: string;
+  author_designation: string | null;
+  source_url: string | null;
+  source_name: string | null;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+  status: BlogStatus;
+  is_featured: boolean;
+  reading_time: number | null;
+  seo_title: string | null;
+  seo_description: string | null;
+}
+
+export type BlogFormData = Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>;
+

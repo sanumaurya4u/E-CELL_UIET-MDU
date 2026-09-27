@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Calendar, MapPin, ArrowRight, Sparkles } from 'lucide-react'
+import { Calendar, MapPin, ArrowRight } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 
 export default async function EventsPage() {
@@ -21,14 +21,13 @@ export default async function EventsPage() {
       {/* Header */}
       <div className="mb-14 text-center max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-warm-secondary border border-warm text-orange-accent text-xs font-bold tracking-wider uppercase mb-5">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>CAMPUS CALENDAR • 2026</span>
+          <span>E-CELL | UIET MDU ROHTAK • CAMPUS CALENDAR</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-warm-primary mb-4 leading-tight">
-          E-Cell Events & <span className="text-orange-accent">Hackathons</span>
+          Events, Workshops & <span className="text-orange-accent">Hackathons</span>
         </h1>
         <p className="text-base text-warm-secondary leading-relaxed">
-          Join our workshops, founder talks, and hackathons to accelerate your entrepreneurial journey at UIET MDU.
+          Join our startup workshops, founder talks, and campus hackathons to turn your ideas into impact at UIET, MDU, Rohtak.
         </p>
       </div>
 

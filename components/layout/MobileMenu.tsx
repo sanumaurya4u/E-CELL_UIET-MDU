@@ -45,7 +45,7 @@ export default function MobileMenu({ isOpen, onClose, links, currentPath }: Mobi
 
         <div className="mt-4 pt-4 border-t border-bordersubtle">
           <Button href="/contact" variant="primary" size="lg" arrow onClick={onClose} className="!w-full" style={{ width: '100%' }}>
-            Join UIET E-Cell
+            Join E-Cell UIET MDU
           </Button>
         </div>
       </div>

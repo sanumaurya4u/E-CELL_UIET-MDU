@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-type ButtonVariant = 'primary' | 'blue' | 'outline' | 'white' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'blue' | 'outline' | 'white' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps {
@@ -24,6 +24,10 @@ const VARIANT_CLASSES: Record<ButtonVariant, { base: string; icon: string }> = {
   primary: {
     base: 'bg-[#211B17] text-[#FCFAF6] border-[#211B17] hover:bg-black hover:border-black dark:bg-[#F5EFE5] dark:text-[#120F0D] dark:border-[#F5EFE5] dark:hover:bg-white',
     icon: 'bg-white text-[#211B17] dark:bg-[#120F0D] dark:text-[#F5EFE5]',
+  },
+  secondary: {
+    base: 'bg-warm-secondary text-warm-primary border-warm hover:bg-warm-surface hover:border-warm-strong',
+    icon: 'bg-warm-surface text-warm-primary group-hover:bg-[#211B17] group-hover:text-white',
   },
   blue: {
     base: 'bg-[#E96832] text-white border-[#E96832] hover:bg-[#D95725] hover:border-[#D95725]',

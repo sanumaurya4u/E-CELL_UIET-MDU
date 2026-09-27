@@ -6,6 +6,21 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
+  const pathname = request.nextUrl.pathname
+
+  // Redirect legacy student-account routes so visitors never hit login walls
+  if (pathname.startsWith('/dashboard/startups/new')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/startups/new'
+    return NextResponse.redirect(url)
+  }
+
+  if (pathname.startsWith('/signup')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return NextResponse.redirect(url)
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -22,7 +37,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({
             request,
           })
@@ -34,34 +49,53 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || 
-                           request.nextUrl.pathname.startsWith('/profile') ||
-                           request.nextUrl.pathname.startsWith('/mentorship') ||
-                           request.nextUrl.pathname.startsWith('/admin')
-
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || 
-                      request.nextUrl.pathname.startsWith('/signup')
-
-  if (isProtectedRoute && !user) {
-    // no user, potentially respond by redirecting the user to the login page
+  // Legacy /dashboard and /profile routes redirect to /admin (if logged in) or / (for public visitors)
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/profile')) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = user ? '/admin' : '/'
     return NextResponse.redirect(url)
   }
 
-  if (isAuthRoute && user) {
-    // user is already logged in, redirect to dashboard
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+  // Only /admin and /blog/preview routes require authentication and Admin role authorization
+  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/blog/preview')
+
+  if (isAdminRoute) {
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      return NextResponse.redirect(url)
+    }
+
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'admin') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      url.searchParams.set('message', 'Access restricted to authorized E-Cell Administrators.')
+      return NextResponse.redirect(url)
+    }
+  }
+
+  if (pathname.startsWith('/login') && user) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role === 'admin') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse

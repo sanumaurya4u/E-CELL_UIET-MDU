@@ -11,7 +11,7 @@ export default function FAQSection() {
           badge="Frequently Asked"
           title="Got questions? We've got"
           italicTitle="answers"
-          subtitle="Everything you need to know about joining, participating, and getting involved with UIET E-Cell."
+          subtitle="Everything you need to know about joining, participating, and getting involved with E-Cell | UIET MDU Rohtak."
         />
 
         {/* Wide accordion — reference spans the content column */}

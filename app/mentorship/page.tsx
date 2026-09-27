@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
 import { avatarUrl } from '@/lib/utils'
-import { Sparkles, Users, ArrowRight } from 'lucide-react'
+import { Users, ArrowRight } from 'lucide-react'
 
 export default async function MentorshipPage() {
   const supabase = await createClient()
@@ -17,14 +17,13 @@ export default async function MentorshipPage() {
       {/* Header */}
       <div className="mb-14 text-center max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-warm-secondary border border-warm text-orange-accent text-xs font-bold tracking-wider uppercase mb-5">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>ALUMNI & EXPERTS • MENTORSHIP</span>
+          <span>E-CELL | UIET MDU ROHTAK • MENTORSHIP</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-warm-primary mb-4 leading-tight">
-          UIET Mentorship <span className="text-orange-accent">Hub</span>
+          Alumni &amp; Founder <span className="text-orange-accent">Mentorship</span>
         </h1>
         <p className="text-base text-warm-secondary leading-relaxed">
-          Connect with experienced alumni and industry experts who can guide you on your entrepreneurial journey and career scaling.
+          Connect with experienced UIET, MDU, Rohtak alumni and industry mentors who can guide your student-led venture from idea to impact.
         </p>
       </div>
 

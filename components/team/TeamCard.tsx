@@ -4,8 +4,8 @@ import type { TeamMember } from '@/lib/types';
 
 export default function TeamCard({ member }: { member: TeamMember; bgColor?: string }) {
   return (
-    <div className="reveal group bg-white border border-border rounded-panel overflow-hidden transition-all duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-borderstrong">
-      <div className="relative w-full h-[300px] overflow-hidden bg-[#f8fafc]">
+    <div className="reveal group card-warm overflow-hidden transition-all duration-200 hover:-translate-y-1">
+      <div className="relative w-full h-[300px] overflow-hidden bg-warm-secondary border-b border-warm">
         <img
           src={member.photo || avatarUrl(member.name)}
           alt={member.name}
@@ -15,9 +15,9 @@ export default function TeamCard({ member }: { member: TeamMember; bgColor?: str
       </div>
 
       <div className="p-5 flex flex-col items-start gap-1">
-        <h3 className="font-sans font-medium text-lg tracking-[-0.015em] text-ink">{member.name}</h3>
-        <p className="text-sm text-secondary">{member.role}</p>
-        {member.year && <p className="text-xs text-muted">{member.year}</p>}
+        <h3 className="font-sans font-bold text-lg tracking-tight text-warm-primary">{member.name}</h3>
+        <p className="text-sm font-medium text-orange-accent">{member.role}</p>
+        {member.year && <p className="text-xs text-warm-muted">{member.year}</p>}
 
         <div className="flex gap-2 mt-2">
           {member.linkedin && member.linkedin !== '#' && (
@@ -25,7 +25,7 @@ export default function TeamCard({ member }: { member: TeamMember; bgColor?: str
               href={member.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-8 h-8 rounded-full border border-border text-secondary transition-all duration-200 hover:bg-ink hover:border-ink hover:text-white"
+              className="flex items-center justify-center w-8 h-8 rounded-full border border-warm text-warm-secondary transition-all duration-200 hover:bg-orange-accent hover:border-orange-accent hover:text-white"
               aria-label={`${member.name} LinkedIn`}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -36,7 +36,7 @@ export default function TeamCard({ member }: { member: TeamMember; bgColor?: str
           {member.email && (
             <a
               href={`mailto:${member.email}`}
-              className="flex items-center justify-center w-8 h-8 rounded-full border border-border text-secondary transition-all duration-200 hover:bg-ink hover:border-ink hover:text-white"
+              className="flex items-center justify-center w-8 h-8 rounded-full border border-warm text-warm-secondary transition-all duration-200 hover:bg-orange-accent hover:border-orange-accent hover:text-white"
               aria-label={`Email ${member.name}`}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import SectionHeader from '@/components/ui/SectionHeader';
 
 interface GalleryItem {
-  id: number;
+  id: number | string;
   image: string;
   title: string;
   description?: string;
@@ -26,9 +26,9 @@ export default function GalleryGrid({
       <div className={containerClassName}>
         <SectionHeader
           badge="Campus Moments"
-          title="Life &amp; energy at"
-          italicTitle="UIET E-Cell"
-          subtitle="Glimpses of pitch competitions, workshops, lamp lighting ceremonies, and team circles."
+          title="Life & energy at"
+          italicTitle="E-Cell | UIET MDU Rohtak"
+          subtitle="Glimpses of student pitch competitions, workshops, ceremonies, and team discussions on campus."
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -37,9 +37,6 @@ export default function GalleryGrid({
               key={item.id}
               className="reveal group bg-white dark:bg-[#171310] border border-border dark:border-[#39322C] rounded-panel p-3 transition-all duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-borderstrong shadow-2xs"
             >
-              {/* Nested image frame — image sits inside the padded card
-                  with its own rounded, clipped container so the hover
-                  zoom never breaks the card edges */}
               <div className="relative w-full h-[260px] overflow-hidden rounded-card bg-[#f8fafc] dark:bg-[#1F1A17]">
                 <Image
                   src={item.image}

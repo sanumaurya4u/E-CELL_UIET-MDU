@@ -14,7 +14,7 @@ export default function TestimonialSection({ faculty }: { faculty?: FacultyMembe
           badge="Guidance & Voices"
           title="What our mentors & student founders say"
           italicTitle="about us"
-          subtitle="Hear from our faculty advisors and student innovators who have grown, built, and led with UIET E-Cell."
+          subtitle="Hear from our faculty advisors and student innovators who have grown, built, and led with E-Cell | UIET MDU Rohtak."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -24,7 +24,7 @@ export default function TestimonialSection({ faculty }: { faculty?: FacultyMembe
               <img src="/gallery/page_28.jpg" alt="Faculty Advisor" className="w-full h-full object-cover object-center" />
             </div>
             <p className="text-[19px] font-medium leading-[1.45] tracking-[-0.015em] text-ink flex-1">
-              &ldquo;UIET E-Cell provides a vital platform for students to learn real-world execution,
+              &ldquo;E-Cell | UIET MDU Rohtak provides a vital platform for students to learn real-world execution,
               collaborate across engineering and management disciplines, and cultivate innovation on campus.&rdquo;
             </p>
             <div className="border-t border-border pt-4">
@@ -32,7 +32,7 @@ export default function TestimonialSection({ faculty }: { faculty?: FacultyMembe
                 {faculty?.name || 'Dr. Rajesh Kumar'}
               </div>
               <div className="text-sm text-secondary leading-[1.4]">
-                {faculty?.designation || 'Faculty Advisor, UIET E-Cell'}
+                {faculty?.designation || 'Faculty Advisor, E-Cell | UIET MDU Rohtak'}
               </div>
             </div>
           </div>

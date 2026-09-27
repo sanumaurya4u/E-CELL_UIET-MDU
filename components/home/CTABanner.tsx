@@ -1,37 +1,40 @@
 import React from 'react';
-import Button from '@/components/ui/Button';
+import Link from 'next/link';
+import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ECELL_INFO } from '@/lib/constants';
 
 export default function CTABanner() {
   return (
-    <section className="py-[clamp(56px,7vw,80px)]">
-      <div className="max-w-[1272px] mx-auto px-6">
-        {/* Reference "Together Section": rounded bordered gradient card,
-            inset from the page edges — not full-bleed */}
-        <div className="reveal relative overflow-hidden bg-white border border-border rounded-panel text-center">
-          <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 bg-[linear-gradient(71deg,rgba(217,243,252,0.38)_11%,rgba(235,248,253,0.45)_45.7%,rgba(255,255,255,0.54)_64.5%,rgba(253,241,211,0.66)_100%)] [mask-image:linear-gradient(to_bottom,black_55%,transparent_92%)] [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_92%)]">
-            <img
-              src="/assets/images/ntUDPbezGATca4W8ayYcVbeQbM.svg"
-              alt="UIET E-Cell Glow"
-              className="w-full h-full object-cover object-center opacity-90"
-            />
+    <section className="py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="reveal bg-[#120F0D] border border-[#39322C] rounded-3xl p-8 sm:p-14 text-center text-[#F5EFE5] shadow-lg">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#1D1815] border border-[#39322C] text-orange-accent text-xs font-bold uppercase tracking-wider mb-5">
+            <span>{ECELL_INFO.name}</span>
           </div>
-
-          <div className="relative z-[1] flex flex-col items-center max-w-[800px] mx-auto px-6 py-[clamp(60px,8vw,96px)]">
-            <h2 className="font-sans font-medium text-[clamp(32px,5vw,56px)] leading-[1.08] tracking-[-0.04em] text-ink mb-5 [text-wrap:balance]">
-              Take the leap into{' '}
-              <span className="font-serif italic font-normal tracking-[-0.01em] text-ink text-[1.05em]">
-                student entrepreneurship
-              </span>
-            </h2>
-            <p className="text-[clamp(16px,2vw,18px)] leading-[1.6] text-secondary max-w-[640px] mb-9">
-              Looking to launch a project, build leadership skills, or connect with innovators across
-              campus? Join UIET E-Cell and turn your bold ideas into reality.
-            </p>
-            <div className="flex justify-center">
-              <Button href="/contact" variant="blue" size="lg" arrow>
-                Join UIET E-Cell Today
-              </Button>
-            </div>
+          <h2 className="font-sans font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight text-white mb-4 max-w-2xl mx-auto">
+            Turn your <span className="text-orange-accent">ideas into impact</span>
+          </h2>
+          <p className="text-sm sm:text-base leading-relaxed text-[#C9BFB3] max-w-xl mx-auto mb-8">
+            {ECELL_INFO.description}. Join {ECELL_INFO.name} to collaborate on student-led ventures,
+            participate in campus events, and learn with fellow innovators.
+          </p>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#120F0D] hover:bg-neutral-100 text-sm font-semibold transition-all shadow-xs"
+            >
+              <span>Join E-Cell</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a
+              href={ECELL_INFO.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-full border border-[#39322C] bg-[#1D1815] text-sm font-semibold text-[#F5EFE5] hover:border-orange-accent transition-colors"
+            >
+              <span>Instagram {ECELL_INFO.instagramHandle}</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
       </div>

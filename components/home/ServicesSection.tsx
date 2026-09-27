@@ -50,10 +50,10 @@ export default function ServicesSection() {
     <section className="py-[clamp(56px,7vw,80px)]">
       <div className="max-w-[1272px] mx-auto px-6">
         <SectionHeader
-          badge="UIET E-Cell® Overview"
-          title="Where student ideas meet"
-          italicTitle="thoughtful execution"
-          subtitle="Discover how we cultivate an entrepreneurial mindset, organize technical workshops, and support student founders across MDU Rohtak."
+          badge="E-Cell | UIET MDU Rohtak"
+          title="Turning student ideas into"
+          italicTitle="real-world impact"
+          subtitle="Promoting entrepreneurship & innovation at UIET through startup workshops, events, hackathons, mentorship, and student-led ventures."
         />
 
         {/* Services inside one big bordered container — reference layout */}
@@ -87,15 +87,15 @@ export default function ServicesSection() {
           <div className="bg-ink text-white rounded-card py-8 px-10 flex items-center justify-between gap-6 flex-wrap">
             <div className="flex flex-col gap-1.5">
               <div className="text-[13px] text-white/55 font-medium uppercase tracking-[0.06em]">
-                Ready to build your idea?
+                Ideas into Impact
               </div>
               <h3 className="font-sans font-medium text-[clamp(20px,2.5vw,28px)] tracking-[-0.03em] text-white">
-                Start Your Entrepreneurial Journey with UIET E-Cell!
+                Start Your Entrepreneurial Journey with E-Cell | UIET MDU Rohtak!
               </h3>
             </div>
             <div className="flex items-center gap-3.5 flex-wrap">
               <Button href="/contact" variant="white" size="md" arrow>
-                Join UIET E-Cell
+                Join E-Cell UIET MDU
               </Button>
               <Button href="/events" variant="outline" size="md" arrow onDark>
                 Explore Events

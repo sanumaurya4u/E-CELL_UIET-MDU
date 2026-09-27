@@ -1,120 +1,139 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { createEvent } from '../actions'
+import { saveEventAction } from '@/app/admin/actions'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 export default function NewEventPage() {
+  const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
-  const [file, setFile] = useState<File | null>(null)
-  
-  const supabase = createClient()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsSubmitting(true)
     setErrorMsg('')
-    
+
     const formData = new FormData(e.currentTarget)
-    let imageUrl = ''
+    const result = await saveEventAction(formData)
 
-    // 1. Upload image if exists
-    if (file) {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
-      
-      const { data, error: uploadError } = await supabase.storage
-        .from('event_posters')
-        .upload(fileName, file)
-
-      if (uploadError) {
-        setErrorMsg('Failed to upload image: ' + uploadError.message)
-        setIsSubmitting(false)
-        return
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from('event_posters')
-        .getPublicUrl(fileName)
-        
-      imageUrl = publicUrlData.publicUrl
-    }
-
-    formData.set('imageUrl', imageUrl)
-
-    // 2. Submit data
-    const result = await createEvent(formData)
-    
     if (result?.error) {
       setErrorMsg(result.error)
       setIsSubmitting(false)
+    } else {
+      router.push('/admin')
+      router.refresh()
     }
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-12 px-4 sm:px-6 lg:px-8 mb-20">
-      <Link href="/admin" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-indigo-600 mb-6">
-        <ArrowLeft className="w-4 h-4 mr-1" /> Back to Admin Dashboard
+    <div className="max-w-3xl mx-auto pt-10 px-4 sm:px-6 lg:px-8 pb-20">
+      <Link
+        href="/admin"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-warm-secondary hover:text-orange-accent mb-6 transition-colors"
+      >
+        <ArrowLeft className="w-3.5 h-3.5" />
+        <span>Back to Admin Dashboard</span>
       </Link>
 
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 shadow-sm">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Create New Event</h1>
-        
+      <div className="card-warm p-6 sm:p-10 shadow-xs">
+        <h1 className="text-2xl font-extrabold text-warm-primary mb-6">
+          Create New Event
+        </h1>
+
         {errorMsg && (
-          <div className="mb-6 p-4 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-md text-sm">
+          <div className="mb-6 p-4 bg-red-500/10 text-red-700 dark:text-red-300 border border-red-500/30 rounded-xl text-xs font-medium">
             {errorMsg}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Event Title *</label>
-            <input required type="text" name="title" className="w-full rounded-md px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Date & Time *</label>
-              <input required type="datetime-local" name="date" className="w-full rounded-md px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700" />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Location *</label>
-              <input required type="text" name="location" placeholder="e.g. UIET Seminar Hall" className="w-full rounded-md px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700" />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Description *</label>
-            <textarea required name="description" rows={5} className="w-full rounded-md px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700"></textarea>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">External Registration Link (Optional)</label>
-            <input type="url" name="registrationLink" placeholder="e.g. Google Forms link" className="w-full rounded-md px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700" />
-            <p className="text-xs text-slate-500">Leave blank to use the built-in RSVP system.</p>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Event Poster (Optional)</label>
-            <input 
-              type="file" 
-              accept="image/*"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
-              className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400"
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-warm-primary mb-1.5">
+              Event Title *
+            </label>
+            <input
+              required
+              type="text"
+              name="title"
+              placeholder="e.g. Innostorm 2026 Ideathon"
+              className="w-full rounded-xl px-4 py-2.5 bg-warm-secondary border border-warm text-sm text-warm-primary focus:outline-none focus:border-orange-accent"
             />
           </div>
 
-          <div className="pt-4 flex justify-end">
-            <button 
-              type="submit" 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-warm-primary mb-1.5">
+                Date &amp; Time *
+              </label>
+              <input
+                required
+                type="datetime-local"
+                name="date"
+                className="w-full rounded-xl px-4 py-2.5 bg-warm-secondary border border-warm text-sm text-warm-primary focus:outline-none focus:border-orange-accent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-warm-primary mb-1.5">
+                Location *
+              </label>
+              <input
+                required
+                type="text"
+                name="location"
+                placeholder="e.g. UIET Seminar Hall"
+                className="w-full rounded-xl px-4 py-2.5 bg-warm-secondary border border-warm text-sm text-warm-primary focus:outline-none focus:border-orange-accent"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-warm-primary mb-1.5">
+              Description *
+            </label>
+            <textarea
+              required
+              name="description"
+              rows={5}
+              className="w-full rounded-xl px-4 py-2.5 bg-warm-secondary border border-warm text-sm text-warm-primary focus:outline-none focus:border-orange-accent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-warm-primary mb-1.5">
+              External Registration Link (Optional)
+            </label>
+            <input
+              type="url"
+              name="registration_link"
+              placeholder="e.g. Google Forms link (leave blank for built-in RSVP)"
+              className="w-full rounded-xl px-4 py-2.5 bg-warm-secondary border border-warm text-sm text-warm-primary focus:outline-none focus:border-orange-accent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-warm-primary mb-1.5">
+              Event Poster Upload (Optional)
+            </label>
+            <input
+              type="file"
+              name="poster_file"
+              accept="image/*"
+              className="w-full text-xs text-warm-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border file:border-warm file:text-xs file:font-semibold file:bg-warm-secondary file:text-warm-primary hover:file:border-orange-accent"
+            />
+          </div>
+
+          <div className="pt-4 border-t border-warm flex justify-end">
+            <button
+              type="submit"
               disabled={isSubmitting}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md font-medium text-sm disabled:opacity-50"
+              className="btn-pill-primary text-xs px-6 py-3 font-semibold disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? 'Creating...' : 'Create Event'}
+              <span>{isSubmitting ? 'Creating...' : 'Create Event'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </form>

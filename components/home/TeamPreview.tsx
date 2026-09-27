@@ -53,7 +53,7 @@ export default function TeamPreview() {
         <div className="reveal bg-soft border border-bordersubtle rounded-card py-4 px-6 mb-10">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-3 flex-wrap">
             <span className="text-[13px] font-medium text-ink uppercase tracking-[0.04em]">
-              Founding Pioneers of UIET E-Cell
+              Founding Pioneers of E-Cell | UIET MDU Rohtak
             </span>
             <div className="flex gap-2.5 flex-wrap justify-center">
               {FOUNDERS.map((name) => (
