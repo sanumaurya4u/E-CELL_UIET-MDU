@@ -90,12 +90,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
 
-      // 1. Team
+      // 1. Team (active members ordered by display_order)
       const { data: teamData, error: teamErr } = await supabase
         .from('team')
         .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
         .order('order', { ascending: true });
-      if (!teamErr && teamData && teamData.length > 0) {
+      if (!teamErr && teamData) {
         setTeam(teamData);
       }
 

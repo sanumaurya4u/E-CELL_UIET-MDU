@@ -43,15 +43,25 @@ export interface EventItem {
 }
 
 export interface TeamMember {
-  id: number;
+  id: number | string;
   name: string;
   role: string;
+  designation?: string;
   department: string;
-  year?: string;
+  bio?: string | null;
+  year?: string | null;
   linkedin?: string | null;
+  linkedin_url?: string | null;
+  instagram_url?: string | null;
+  github_url?: string | null;
   email?: string | null;
   photo?: string | null;
+  profile_image_url?: string | null;
   order?: number;
+  display_order?: number;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Founder {

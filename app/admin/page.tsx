@@ -36,6 +36,7 @@ export default async function AdminDashboardPage() {
     { data: siteBlocksRows },
     { data: applications },
     { data: blogs },
+    { data: team },
   ] = await Promise.all([
     supabase.from('events').select('*').order('date', { ascending: false }),
     supabase
@@ -72,6 +73,11 @@ export default async function AdminDashboardPage() {
       .from('blogs')
       .select('*')
       .order('created_at', { ascending: false }),
+    supabase
+      .from('team')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: true }),
   ])
 
   const siteBlocks: Record<string, any> = {}
@@ -94,6 +100,7 @@ export default async function AdminDashboardPage() {
       siteBlocks={siteBlocks}
       applications={applications || []}
       blogs={blogs || []}
+      team={team || []}
     />
   )
 }

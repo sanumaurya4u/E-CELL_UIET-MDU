@@ -33,6 +33,7 @@ function revalidateAllPublicPaths() {
   revalidatePath('/resources')
   revalidatePath('/startups')
   revalidatePath('/mentorship')
+  revalidatePath('/team')
   revalidatePath('/blog')
   revalidatePath('/about')
   revalidatePath('/contact')
@@ -42,7 +43,7 @@ function revalidateAllPublicPaths() {
 async function uploadFileIfPresent(
   supabase: any,
   file: File | null,
-  bucket: 'event_posters' | 'startup_logos' | 'site_images' | 'blog-images'
+  bucket: 'event_posters' | 'startup_logos' | 'site_images' | 'blog-images' | 'team_images'
 ): Promise<string | null> {
   if (!file || file.size === 0) return null
 
@@ -793,4 +794,193 @@ export async function deleteBlogAction(id: string | number) {
     return { error: err.message || 'Failed to delete blog post.' }
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   10. TEAM MANAGEMENT
+   ───────────────────────────────────────────────────────────── */
+
+async function cleanupTeamStorageImageIfUnused(
+  supabase: any,
+  imageUrl: string | null | undefined,
+  excludeId?: string
+) {
+  if (!imageUrl || typeof imageUrl !== 'string') return
+  const marker = '/storage/v1/object/public/team_images/'
+  const idx = imageUrl.indexOf(marker)
+  if (idx === -1) return
+
+  const objectPath = decodeURIComponent(
+    imageUrl.substring(idx + marker.length).split('?')[0]
+  )
+  if (!objectPath) return
+
+  // Ensure no other team member row references this same image URL
+  let checkQuery = supabase
+    .from('team')
+    .select('id', { count: 'exact', head: true })
+    .or(`profile_image_url.eq.${imageUrl},photo.eq.${imageUrl}`)
+
+  if (excludeId) {
+    checkQuery = checkQuery.neq('id', excludeId)
+  }
+
+  const { count } = await checkQuery
+  if (!count || count === 0) {
+    await supabase.storage.from('team_images').remove([objectPath])
+  }
+}
+
+export async function saveTeamMemberAction(formData: FormData) {
+  try {
+    const { supabase } = await requireAdmin()
+
+    const id = ((formData.get('id') as string) || '').trim()
+    const name = ((formData.get('name') as string) || '').trim()
+    const designation = ((formData.get('designation') as string) || '').trim()
+    const departmentSelect = ((formData.get('department') as string) || '').trim()
+    const customDepartment = ((formData.get('custom_department') as string) || '').trim()
+    const department =
+      departmentSelect === '__custom__' ? customDepartment : departmentSelect
+    const bio = ((formData.get('bio') as string) || '').trim()
+    const year = ((formData.get('year') as string) || '').trim()
+    const linkedinUrl = ((formData.get('linkedin_url') as string) || '').trim()
+    const instagramUrl = ((formData.get('instagram_url') as string) || '').trim()
+    const githubUrl = ((formData.get('github_url') as string) || '').trim()
+    const email = ((formData.get('email') as string) || '').trim()
+    const displayOrderRaw = ((formData.get('display_order') as string) || '1').trim()
+    const isActive =
+      formData.get('is_active') === 'on' || formData.get('is_active') === 'true'
+    const existingImageUrl = ((formData.get('profile_image_url') as string) || '').trim()
+    const profileFile = formData.get('profile_file') as File | null
+
+    if (!name || !designation || !department) {
+      return {
+        error: 'Full Name, Designation / Post, and Department are required.',
+      }
+    }
+
+    const displayOrder = Number.isFinite(Number(displayOrderRaw))
+      ? Math.max(1, parseInt(displayOrderRaw, 10))
+      : 1
+
+    const uploadedUrl = await uploadFileIfPresent(
+      supabase,
+      profileFile,
+      'team_images'
+    )
+    const finalImageUrl = uploadedUrl || existingImageUrl || null
+
+    if (id) {
+      // Check if previous profile image was replaced or removed
+      const { data: prevMember } = await supabase
+        .from('team')
+        .select('profile_image_url, photo')
+        .eq('id', id)
+        .single()
+
+      const prevUrl = prevMember?.profile_image_url || prevMember?.photo || null
+      if (prevUrl && prevUrl !== finalImageUrl) {
+        await cleanupTeamStorageImageIfUnused(supabase, prevUrl, id)
+      }
+
+      const payload = {
+        name,
+        designation,
+        role: designation,
+        department,
+        bio: bio || null,
+        year: year || null,
+        profile_image_url: finalImageUrl,
+        photo: finalImageUrl,
+        linkedin_url: linkedinUrl || null,
+        linkedin: linkedinUrl || null,
+        instagram_url: instagramUrl || null,
+        github_url: githubUrl || null,
+        email: email || null,
+        display_order: displayOrder,
+        order: displayOrder,
+        is_active: isActive,
+        updated_at: new Date().toISOString(),
+      }
+
+      const { error } = await supabase.from('team').update(payload).eq('id', id)
+      if (error) return { error: error.message }
+    } else {
+      const payload = {
+        name,
+        designation,
+        role: designation,
+        department,
+        bio: bio || null,
+        year: year || null,
+        profile_image_url: finalImageUrl,
+        photo: finalImageUrl,
+        linkedin_url: linkedinUrl || null,
+        linkedin: linkedinUrl || null,
+        instagram_url: instagramUrl || null,
+        github_url: githubUrl || null,
+        email: email || null,
+        display_order: displayOrder,
+        order: displayOrder,
+        is_active: isActive,
+      }
+
+      const { error } = await supabase.from('team').insert([payload])
+      if (error) return { error: error.message }
+    }
+
+    revalidateAllPublicPaths()
+    return { success: true }
+  } catch (err: any) {
+    return { error: err.message || 'Failed to save team member.' }
+  }
+}
+
+export async function toggleTeamMemberActiveAction(
+  id: string,
+  isActive: boolean
+) {
+  try {
+    const { supabase } = await requireAdmin()
+    const { error } = await supabase
+      .from('team')
+      .update({
+        is_active: isActive,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+
+    if (error) return { error: error.message }
+    revalidateAllPublicPaths()
+    return { success: true }
+  } catch (err: any) {
+    return { error: err.message || 'Failed to update member status.' }
+  }
+}
+
+export async function deleteTeamMemberAction(id: string) {
+  try {
+    const { supabase } = await requireAdmin()
+
+    const { data: member } = await supabase
+      .from('team')
+      .select('profile_image_url, photo')
+      .eq('id', id)
+      .single()
+
+    const { error } = await supabase.from('team').delete().eq('id', id)
+    if (error) return { error: error.message }
+
+    const imgUrl = member?.profile_image_url || member?.photo || null
+    if (imgUrl) {
+      await cleanupTeamStorageImageIfUnused(supabase, imgUrl, id)
+    }
+
+    revalidateAllPublicPaths()
+    return { success: true }
+  } catch (err: any) {
+    return { error: err.message || 'Failed to delete team member.' }
+  }
+}
+
 

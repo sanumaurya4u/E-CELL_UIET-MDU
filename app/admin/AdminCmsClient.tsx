@@ -44,8 +44,12 @@ import {
   saveSiteBlocksAction,
   updateApplicationStatusAction,
   deleteApplicationAction,
+  saveTeamMemberAction,
+  toggleTeamMemberActiveAction,
+  deleteTeamMemberAction,
 } from './actions'
-import { formatDate } from '@/lib/utils'
+import { formatDate, avatarUrl } from '@/lib/utils'
+import { departments as defaultDepartments } from '@/data/team'
 import BlogManager from '@/components/admin/BlogManager'
 
 interface AdminCmsProps {
@@ -62,10 +66,12 @@ interface AdminCmsProps {
   siteBlocks: Record<string, any>
   applications: any[]
   blogs: any[]
+  team: any[]
 }
 
 type TabId =
   | 'overview'
+  | 'team'
   | 'events'
   | 'announcements'
   | 'blog'
@@ -78,6 +84,12 @@ type TabId =
 
 const TABS: Array<{ id: TabId; label: string; icon: any; badge?: (p: AdminCmsProps) => number }> = [
   { id: 'overview', label: 'Overview', icon: Sparkles },
+  {
+    id: 'team',
+    label: 'Team Management',
+    icon: Users,
+    badge: (p) => (p.team || []).length,
+  },
   {
     id: 'events',
     label: 'Events & RSVPs',
@@ -122,6 +134,22 @@ const RESOURCE_CATEGORIES = [
   'Roadmaps & Playbooks',
 ]
 
+const DESIGNATION_SUGGESTIONS = [
+  'President',
+  'Vice President',
+  'General Secretary',
+  'Technical Head',
+  'Tech Lead',
+  'Marketing Head',
+  'Social Media Lead',
+  'Event Head',
+  'Events Head',
+  'Research Lead',
+  'Documentation Lead',
+  'Department Lead',
+  'Team Member',
+]
+
 const inputCls =
   'w-full rounded-xl px-3.5 py-2.5 bg-warm-secondary border border-warm text-xs sm:text-sm text-warm-primary placeholder:text-warm-muted focus:outline-none focus:border-orange-accent transition-colors'
 const labelCls =
@@ -136,6 +164,13 @@ export default function AdminCmsClient(props: AdminCmsProps) {
   )
 
   // Modal / Form states for editing vs adding
+  const [editingTeamMember, setEditingTeamMember] = useState<any | null>(null)
+  const [showTeamForm, setShowTeamForm] = useState(false)
+  const [teamDeptFilter, setTeamDeptFilter] = useState<string>('ALL')
+  const [teamDeptSelect, setTeamDeptSelect] = useState<string>('Leadership')
+  const [teamCustomDept, setTeamCustomDept] = useState<string>('')
+  const [teamImageUrl, setTeamImageUrl] = useState<string>('')
+
   const [editingEvent, setEditingEvent] = useState<any | null>(null)
   const [showEventForm, setShowEventForm] = useState(false)
   const [rsvpEventFilter, setRsvpEventFilter] = useState<string>('ALL')
@@ -333,6 +368,12 @@ export default function AdminCmsClient(props: AdminCmsProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               {
+                label: 'Team Members',
+                value: (props.team || []).length,
+                sub: `${(props.team || []).filter((m) => m.is_active !== false).length} Active on /team`,
+                tab: 'team' as TabId,
+              },
+              {
                 label: 'Events Published',
                 value: props.events.length,
                 sub: `${props.eventRsvps.length} Total RSVPs`,
@@ -417,11 +458,26 @@ export default function AdminCmsClient(props: AdminCmsProps) {
               <button
                 type="button"
                 onClick={() => {
+                  setEditingTeamMember(null)
+                  setTeamDeptSelect('Leadership')
+                  setTeamCustomDept('')
+                  setTeamImageUrl('')
+                  setShowTeamForm(true)
+                  setActiveTab('team')
+                }}
+                className="btn-pill-primary text-xs py-2.5 px-4 font-semibold cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Team Member</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
                   setEditingEvent(null)
                   setShowEventForm(true)
                   setActiveTab('events')
                 }}
-                className="btn-pill-primary text-xs py-2.5 px-4 font-semibold cursor-pointer"
+                className="btn-pill-secondary text-xs py-2.5 px-4 font-semibold cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add Event</span>
@@ -2315,6 +2371,580 @@ export default function AdminCmsClient(props: AdminCmsProps) {
           <BlogManager blogs={props.blogs || []} />
         </div>
       )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          TAB 11: TEAM MANAGEMENT
+          ───────────────────────────────────────────────────────────── */}
+      {activeTab === 'team' && (() => {
+        const allTeam = [...(props.team || [])].sort(
+          (a, b) =>
+            (a.display_order ?? a.order ?? 99) -
+            (b.display_order ?? b.order ?? 99)
+        )
+        const allDepartments = Array.from(
+          new Set([
+            ...defaultDepartments,
+            ...allTeam.map((m) => m.department).filter(Boolean),
+          ])
+        )
+        const filteredTeam =
+          teamDeptFilter === 'ALL'
+            ? allTeam
+            : allTeam.filter((m) => m.department === teamDeptFilter)
+
+        return (
+          <div className="space-y-8">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <h2 className="text-xl font-extrabold text-warm-primary">
+                  Team Management ({allTeam.length})
+                </h2>
+                <p className="text-xs text-warm-secondary">
+                  Add, edit, reorder, activate/deactivate, or remove E-Cell Executive Board members displayed on the public /team page.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingTeamMember(null)
+                  setTeamDeptSelect('Leadership')
+                  setTeamCustomDept('')
+                  setTeamImageUrl('')
+                  setShowTeamForm(true)
+                }}
+                className="btn-pill-primary text-xs py-2.5 px-4 font-semibold cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Team Member</span>
+              </button>
+            </div>
+
+            {/* Department Filter Pills */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setTeamDeptFilter('ALL')}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
+                  teamDeptFilter === 'ALL'
+                    ? 'bg-[#211B17] dark:bg-[#F5EFE5] text-[#FCFAF6] dark:text-[#120F0D] border-[#211B17] dark:border-[#F5EFE5]'
+                    : 'bg-warm-surface text-warm-secondary border-warm hover:text-warm-primary'
+                }`}
+              >
+                All Departments ({allTeam.length})
+              </button>
+              {allDepartments.map((dept) => {
+                const count = allTeam.filter((m) => m.department === dept).length
+                return (
+                  <button
+                    key={dept}
+                    type="button"
+                    onClick={() => setTeamDeptFilter(dept)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
+                      teamDeptFilter === dept
+                        ? 'bg-[#211B17] dark:bg-[#F5EFE5] text-[#FCFAF6] dark:text-[#120F0D] border-[#211B17] dark:border-[#F5EFE5]'
+                        : 'bg-warm-surface text-warm-secondary border-warm hover:text-warm-primary'
+                    }`}
+                  >
+                    {dept} ({count})
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Add / Edit Team Member Form */}
+            {showTeamForm && (
+              <div className="card-warm p-6 border-2 border-orange-accent/40">
+                <div className="flex items-center justify-between mb-5 pb-3 border-b border-warm">
+                  <h3 className="text-base font-extrabold text-warm-primary">
+                    {editingTeamMember
+                      ? `Edit Team Member: ${editingTeamMember.name}`
+                      : 'Add New Team Member'}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowTeamForm(false)
+                      setEditingTeamMember(null)
+                    }}
+                    className="text-xs text-warm-muted hover:text-warm-primary cursor-pointer"
+                  >
+                    Close ✕
+                  </button>
+                </div>
+
+                <form
+                  key={editingTeamMember?.id || 'new-team-member'}
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    const fd = new FormData(e.currentTarget)
+                    runAction(
+                      () => saveTeamMemberAction(fd),
+                      editingTeamMember
+                        ? 'Team member updated successfully!'
+                        : 'Team member added successfully!',
+                      () => {
+                        setShowTeamForm(false)
+                        setEditingTeamMember(null)
+                      }
+                    )
+                  }}
+                  className="grid sm:grid-cols-2 gap-4"
+                >
+                  <input
+                    type="hidden"
+                    name="id"
+                    defaultValue={editingTeamMember?.id || ''}
+                  />
+
+                  <div>
+                    <label className={labelCls}>Full Name *</label>
+                    <input
+                      name="name"
+                      required
+                      defaultValue={editingTeamMember?.name || ''}
+                      placeholder="e.g., Ananya Sharma"
+                      className={inputCls}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>Designation / Post *</label>
+                    <input
+                      name="designation"
+                      list="ecell-designation-suggestions"
+                      required
+                      defaultValue={
+                        editingTeamMember?.designation ||
+                        editingTeamMember?.role ||
+                        ''
+                      }
+                      placeholder="e.g., President, Vice President, Technical Head..."
+                      className={inputCls}
+                    />
+                    <datalist id="ecell-designation-suggestions">
+                      {DESIGNATION_SUGGESTIONS.map((pos) => (
+                        <option key={pos} value={pos} />
+                      ))}
+                    </datalist>
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>Department / Team Category *</label>
+                    <select
+                      name="department"
+                      value={teamDeptSelect}
+                      onChange={(e) => setTeamDeptSelect(e.target.value)}
+                      className={inputCls}
+                    >
+                      {allDepartments.map((dept) => (
+                        <option key={dept} value={dept}>
+                          {dept}
+                        </option>
+                      ))}
+                      <option value="__custom__">+ Custom Department...</option>
+                    </select>
+                  </div>
+
+                  {teamDeptSelect === '__custom__' ? (
+                    <div>
+                      <label className={labelCls}>Custom Department Name *</label>
+                      <input
+                        name="custom_department"
+                        required
+                        value={teamCustomDept}
+                        onChange={(e) => setTeamCustomDept(e.target.value)}
+                        placeholder="Enter custom department name"
+                        className={inputCls}
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <label className={labelCls}>Academic Year &amp; Branch (Optional)</label>
+                      <input
+                        name="year"
+                        defaultValue={editingTeamMember?.year || ''}
+                        placeholder="e.g., 3rd Year, B.Tech CSE"
+                        className={inputCls}
+                      />
+                    </div>
+                  )}
+
+                  {teamDeptSelect === '__custom__' && (
+                    <div>
+                      <label className={labelCls}>Academic Year &amp; Branch (Optional)</label>
+                      <input
+                        name="year"
+                        defaultValue={editingTeamMember?.year || ''}
+                        placeholder="e.g., 3rd Year, B.Tech CSE"
+                        className={inputCls}
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className={labelCls}>Display Order / Position *</label>
+                    <input
+                      type="number"
+                      name="display_order"
+                      min={1}
+                      required
+                      defaultValue={
+                        editingTeamMember?.display_order ??
+                        editingTeamMember?.order ??
+                        allTeam.length + 1
+                      }
+                      placeholder="1"
+                      className={inputCls}
+                    />
+                    <span className="text-[10px] text-warm-muted mt-1 block">
+                      Controls display order on the Team page (1 → first, 2 → second, etc.)
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-4">
+                    <label className="inline-flex items-center gap-2.5 text-xs font-bold text-warm-primary cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="is_active"
+                        defaultChecked={editingTeamMember?.is_active ?? true}
+                        className="w-4 h-4 accent-[#E96832]"
+                      />
+                      <span>Active (Show on Public Team Page)</span>
+                    </label>
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Short Bio</label>
+                    <textarea
+                      name="bio"
+                      rows={3}
+                      defaultValue={editingTeamMember?.bio || ''}
+                      placeholder="Provide a concise bio describing the member's role, focus, and contributions..."
+                      className={inputCls}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>
+                      Upload Profile Image (Supabase Storage: team_images)
+                    </label>
+                    <input
+                      type="file"
+                      name="profile_file"
+                      accept="image/*"
+                      className={inputCls}
+                    />
+                    <span className="text-[10px] text-warm-muted mt-1 block">
+                      JPG, PNG, WEBP up to 5 MB. Leave blank to keep existing image or use initials fallback.
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>
+                      Or Profile Image URL (Leave blank for Initials Fallback)
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        name="profile_image_url"
+                        value={teamImageUrl}
+                        onChange={(e) => setTeamImageUrl(e.target.value)}
+                        placeholder="https://... or leave blank for initials"
+                        className={inputCls}
+                      />
+                      {teamImageUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setTeamImageUrl('')}
+                          className="px-3 py-2.5 rounded-xl bg-warm-secondary border border-warm text-xs font-semibold text-red-600 hover:border-red-400 shrink-0 cursor-pointer"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>LinkedIn URL (Optional)</label>
+                    <input
+                      name="linkedin_url"
+                      defaultValue={
+                        editingTeamMember?.linkedin_url &&
+                        editingTeamMember?.linkedin_url !== '#'
+                          ? editingTeamMember.linkedin_url
+                          : editingTeamMember?.linkedin &&
+                              editingTeamMember?.linkedin !== '#'
+                            ? editingTeamMember.linkedin
+                            : ''
+                      }
+                      placeholder="https://linkedin.com/in/..."
+                      className={inputCls}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>Instagram URL (Optional)</label>
+                    <input
+                      name="instagram_url"
+                      defaultValue={editingTeamMember?.instagram_url || ''}
+                      placeholder="https://instagram.com/..."
+                      className={inputCls}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>GitHub URL (Optional)</label>
+                    <input
+                      name="github_url"
+                      defaultValue={editingTeamMember?.github_url || ''}
+                      placeholder="https://github.com/..."
+                      className={inputCls}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelCls}>Email Address (Optional)</label>
+                    <input
+                      type="email"
+                      name="email"
+                      defaultValue={editingTeamMember?.email || ''}
+                      placeholder="member@ecellmdu.in"
+                      className={inputCls}
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2 flex justify-end gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowTeamForm(false)
+                        setEditingTeamMember(null)
+                      }}
+                      className="btn-pill-secondary text-xs py-2.5 px-5 font-semibold cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isPending}
+                      className="btn-pill-primary text-xs py-2.5 px-6 font-semibold cursor-pointer"
+                    >
+                      {isPending
+                        ? 'Saving...'
+                        : editingTeamMember
+                          ? 'Update Team Member'
+                          : 'Add Team Member'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Team Members List */}
+            <div className="card-warm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-warm bg-warm-secondary/60 text-[11px] font-bold uppercase tracking-wider text-warm-muted">
+                      <th className="py-3.5 px-4">Order</th>
+                      <th className="py-3.5 px-4">Member</th>
+                      <th className="py-3.5 px-4">Designation</th>
+                      <th className="py-3.5 px-4">Department</th>
+                      <th className="py-3.5 px-4">Socials</th>
+                      <th className="py-3.5 px-4">Status</th>
+                      <th className="py-3.5 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-warm text-xs">
+                    {filteredTeam.map((member) => {
+                      const imgSrc =
+                        member.profile_image_url ||
+                        member.photo ||
+                        avatarUrl(member.name)
+                      const designation = member.designation || member.role
+                      const orderVal = member.display_order ?? member.order ?? 1
+                      const isActive = member.is_active !== false
+                      const hasLinkedin =
+                        (member.linkedin_url && member.linkedin_url !== '#') ||
+                        (member.linkedin && member.linkedin !== '#')
+
+                      return (
+                        <tr
+                          key={member.id}
+                          className={`hover:bg-warm-secondary/40 transition-colors ${
+                            !isActive ? 'opacity-60' : ''
+                          }`}
+                        >
+                          <td className="py-3.5 px-4 font-mono font-bold text-warm-primary">
+                            #{orderVal}
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-3">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={imgSrc}
+                                alt={member.name}
+                                onError={(e) => {
+                                  const target = e.currentTarget
+                                  const fallback = avatarUrl(member.name)
+                                  if (target.src !== fallback) target.src = fallback
+                                }}
+                                className="w-10 h-10 rounded-full object-cover border border-warm shrink-0 bg-warm-secondary"
+                              />
+                              <div className="max-w-xs">
+                                <div className="font-bold text-warm-primary text-sm">
+                                  {member.name}
+                                </div>
+                                {member.year && (
+                                  <div className="text-[11px] text-warm-muted">
+                                    {member.year}
+                                  </div>
+                                )}
+                                {member.bio && (
+                                  <div className="text-[11px] text-warm-secondary line-clamp-1 mt-0.5">
+                                    {member.bio}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4 font-semibold text-orange-accent">
+                            {designation}
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="badge-pill text-[11px] font-semibold">
+                              {member.department}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {hasLinkedin && (
+                                <span className="px-2 py-0.5 rounded-md bg-warm-secondary border border-warm text-[10px] font-semibold">
+                                  IN
+                                </span>
+                              )}
+                              {member.instagram_url && (
+                                <span className="px-2 py-0.5 rounded-md bg-warm-secondary border border-warm text-[10px] font-semibold">
+                                  IG
+                                </span>
+                              )}
+                              {member.github_url && (
+                                <span className="px-2 py-0.5 rounded-md bg-warm-secondary border border-warm text-[10px] font-semibold">
+                                  GH
+                                </span>
+                              )}
+                              {member.email && (
+                                <span className="px-2 py-0.5 rounded-md bg-warm-secondary border border-warm text-[10px] font-semibold">
+                                  Mail
+                                </span>
+                              )}
+                              {!hasLinkedin &&
+                                !member.instagram_url &&
+                                !member.github_url &&
+                                !member.email && (
+                                  <span className="text-warm-muted">—</span>
+                                )}
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                runAction(
+                                  () =>
+                                    toggleTeamMemberActiveAction(
+                                      String(member.id),
+                                      !isActive
+                                    ),
+                                  isActive
+                                    ? `${member.name} set to Inactive.`
+                                    : `${member.name} set to Active.`
+                                )
+                              }
+                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border cursor-pointer transition-colors ${
+                                isActive
+                                  ? 'bg-[#3E8F5A]/15 text-[#2f7a1d] dark:text-[#79d45e] border-[#3E8F5A]/30 hover:bg-[#3E8F5A]/25'
+                                  : 'bg-warm-secondary text-warm-muted border-warm hover:text-warm-primary'
+                              }`}
+                            >
+                              {isActive ? (
+                                <>
+                                  <CheckCircle2 className="w-3 h-3" />
+                                  <span>Active</span>
+                                </>
+                              ) : (
+                                <>
+                                  <XCircle className="w-3 h-3" />
+                                  <span>Inactive</span>
+                                </>
+                              )}
+                            </button>
+                          </td>
+                          <td className="py-3.5 px-4 text-right">
+                            <div className="inline-flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingTeamMember(member)
+                                  setTeamDeptSelect(
+                                    member.department || 'Leadership'
+                                  )
+                                  setTeamCustomDept('')
+                                  setTeamImageUrl(
+                                    member.profile_image_url ||
+                                      member.photo ||
+                                      ''
+                                  )
+                                  setShowTeamForm(true)
+                                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                                }}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-warm-secondary border border-warm text-xs font-semibold text-warm-primary hover:border-orange-accent cursor-pointer"
+                              >
+                                <Pencil className="w-3 h-3" />
+                                <span>Edit</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (
+                                    window.confirm(
+                                      'Are you sure you want to remove this team member?'
+                                    )
+                                  ) {
+                                    runAction(
+                                      () =>
+                                        deleteTeamMemberAction(String(member.id)),
+                                      'Team member removed.'
+                                    )
+                                  }
+                                }}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-xs font-semibold text-red-600 hover:bg-red-500/20 cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                <span>Delete</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+
+                    {filteredTeam.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={7}
+                          className="py-8 text-center text-xs text-warm-muted"
+                        >
+                          No team members found in this category. Click &ldquo;Add Team Member&rdquo; to create one.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }
