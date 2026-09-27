@@ -16,9 +16,6 @@ export function useScrollReveal() {
       });
     };
 
-    // Trigger on mount
-    handleScrollReveal();
-
     // IntersectionObserver for high performance
     const observer = new IntersectionObserver(
       (entries) => {
@@ -35,13 +32,29 @@ export function useScrollReveal() {
       }
     );
 
-    const elements = document.querySelectorAll('.reveal');
-    elements.forEach((el) => observer.observe(el));
+    const observeAll = () => {
+      const elements = document.querySelectorAll('.reveal:not(.visible)');
+      elements.forEach((el) => observer.observe(el));
+      handleScrollReveal();
+    };
+
+    // Trigger on mount
+    observeAll();
+
+    // Observe dynamically added elements (e.g., after live Supabase fetch)
+    const mutationObserver = new MutationObserver(() => {
+      observeAll();
+    });
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
 
     window.addEventListener('scroll', handleScrollReveal, { passive: true });
 
     return () => {
-      elements.forEach((el) => observer.unobserve(el));
+      observer.disconnect();
+      mutationObserver.disconnect();
       window.removeEventListener('scroll', handleScrollReveal);
     };
   }, []);

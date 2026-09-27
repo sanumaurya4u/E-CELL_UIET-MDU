@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import VisionMission from '@/components/about/VisionMission';
 import OurStory from '@/components/about/OurStory';
 import CoreValues from '@/components/about/CoreValues';
@@ -11,8 +11,13 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { ECELL_INFO } from '@/lib/constants';
 
 export default function AboutPage() {
-  const { gallery } = useData();
+  const { gallery, refreshData } = useData();
   useScrollReveal();
+
+  useEffect(() => {
+    refreshData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="pb-20">

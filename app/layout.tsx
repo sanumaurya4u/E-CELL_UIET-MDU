@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import { DataProvider } from '@/context/DataProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -61,11 +62,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-warm-bg text-warm-primary min-h-screen flex flex-col selection:bg-orange-accent selection:text-white`}>
-        <Navbar />
-        <main className="flex-1 w-full">
-          {children}
-        </main>
-        <Footer />
+        <DataProvider>
+          <Navbar />
+          <main className="flex-1 w-full">
+            {children}
+          </main>
+          <Footer />
+        </DataProvider>
       </body>
     </html>
   )

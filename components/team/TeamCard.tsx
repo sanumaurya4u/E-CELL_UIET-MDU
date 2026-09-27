@@ -2,12 +2,20 @@ import React from 'react';
 import { avatarUrl } from '@/lib/utils';
 import type { TeamMember } from '@/lib/types';
 
+function normalizeExternalUrl(url?: string | null): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed || trimmed === '#') return null;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed.replace(/^\/+/, '')}`;
+}
+
 export default function TeamCard({ member }: { member: TeamMember; bgColor?: string }) {
   const imageSrc = member.profile_image_url || member.photo || avatarUrl(member.name);
   const designation = member.designation || member.role;
-  const linkedinUrl = member.linkedin_url || member.linkedin;
-  const instagramUrl = member.instagram_url;
-  const githubUrl = member.github_url;
+  const linkedinUrl = normalizeExternalUrl(member.linkedin_url || member.linkedin);
+  const instagramUrl = normalizeExternalUrl(member.instagram_url);
+  const githubUrl = normalizeExternalUrl(member.github_url);
 
   return (
     <div className="reveal group card-warm overflow-hidden transition-all duration-200 hover:-translate-y-1">
